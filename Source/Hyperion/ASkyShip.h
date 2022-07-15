@@ -3,23 +3,44 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ArrowComponent.h"
 #include "GameFramework/Pawn.h"
 #include "ASkyShip.generated.h"
+
 
 UCLASS()
 class HYPERION_API ASkyShip : public APawn
 {
 	GENERATED_BODY()
-	UPROPERTY(EditDefaultsOnly)
+	
+	UPROPERTY()
 	UStaticMeshComponent* SkyShipCorpus;
+	
+	UPROPERTY(EditDefaultsOnly)
+	UArrowComponent* ForwardArrow;
+	UPROPERTY(EditDefaultsOnly)
+	UArrowComponent* BackArrow;
+	UPROPERTY(EditDefaultsOnly)
+	UArrowComponent* LeftArrow;
+	UPROPERTY(EditDefaultsOnly)
+	UArrowComponent* RightArrow;
+	
 	
 public:
 	// Sets default values for this pawn's properties
 	ASkyShip();
 
 protected:
-	// Called when the game starts or when spawned
+	
+	UPROPERTY(EditAnywhere, Category="MovementSettings")
+	float UpForceMP = 1;
+	UPROPERTY(EditAnywhere, Category="MovementSettings")
+	float SpeedMP = 1;
+	float SkyLevel = 0;
+	
 	virtual void BeginPlay() override;
+	void UpdatePhysics();
+	
 	
 
 public:	

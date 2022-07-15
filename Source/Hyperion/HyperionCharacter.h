@@ -28,11 +28,11 @@ public:
 	AHyperionCharacter();
 
 protected:
-	virtual void BeginPlay();
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void BeginPlay() override;
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+	virtual void Tick(float DeltaSeconds) override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float TurnRateGamepad;
 

@@ -28,7 +28,7 @@ void AHyperionCharacter::BeginPlay()
 
 void AHyperionCharacter::Tick(float DeltaSeconds)
 {
-	//Super::Tick(DeltaSeconds);
+	Super::Tick(DeltaSeconds);
 	FirstPersonCameraComponent -> FieldOfView = FMath::FInterpTo(FirstPersonCameraComponent->FieldOfView, FoV, DeltaSeconds, 8);
 }
 
