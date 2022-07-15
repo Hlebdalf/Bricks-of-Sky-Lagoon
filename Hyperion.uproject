@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{BDE71526-416A-14AA-8BDB-3A9DEC50A583}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "Hyperion",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		}
+	]
+}
