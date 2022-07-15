@@ -15,16 +15,6 @@ class HYPERION_API AInteractiveObject : public APawn
 public:
 	// Sets default values for this pawn's properties
 	AInteractiveObject();
-	
-	UFUNCTION()	
-	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-						class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-						const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,7 +24,13 @@ protected:
 	
 
 public:	
+	UFUNCTION()	
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+						class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+						const FHitResult& SweepResult);
 
-	// Called to bind functionality to input
+	UFUNCTION()
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

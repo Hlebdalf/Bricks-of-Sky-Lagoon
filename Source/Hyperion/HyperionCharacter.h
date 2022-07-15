@@ -19,8 +19,7 @@ class AHyperionCharacter : public ACharacter
 	GENERATED_BODY()
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
-	UPROPERTY()
-	UCharacterMovementComponent* UPlayerMovement;
+	
 	UPROPERTY()
 	UCapsuleComponent* CharacterCollision;
 	float FoV;
@@ -32,6 +31,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UPROPERTY(BlueprintReadWrite)
+	UCharacterMovementComponent* UPlayerMovement;
 	virtual void Tick(float DeltaSeconds) override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float TurnRateGamepad;
@@ -55,7 +56,14 @@ protected:
 
 
 public:
-	
+	UFUNCTION()	
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+						class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+						const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	
 };
