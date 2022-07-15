@@ -1,6 +1,5 @@
 #include "HyperionCharacter.h"
 #include "HyperionProjectile.h"
-#include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -17,7 +16,8 @@ AHyperionCharacter::AHyperionCharacter()
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 	UPlayerMovement = GetCharacterMovement();
-	
+	CharacterCollision = GetCapsuleComponent();
+	CharacterCollision -> SetCollisionProfileName("Pawn");
 }
 
 void AHyperionCharacter::BeginPlay()
@@ -52,6 +52,7 @@ void AHyperionCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AHyperionCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AHyperionCharacter::LookUpAtRate);
+	
 }
 
 
@@ -91,3 +92,4 @@ void AHyperionCharacter::StopRuning()
 	FoV = 100;
 	UPlayerMovement -> MaxWalkSpeed = 600;
 }
+

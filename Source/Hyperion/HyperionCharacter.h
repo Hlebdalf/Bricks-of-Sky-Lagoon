@@ -17,11 +17,12 @@ UCLASS(config=Game)
 class AHyperionCharacter : public ACharacter
 {
 	GENERATED_BODY()
-	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 	UPROPERTY()
 	UCharacterMovementComponent* UPlayerMovement;
+	UPROPERTY()
+	UCapsuleComponent* CharacterCollision;
 	float FoV;
 
 public:
@@ -31,7 +32,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	virtual void Tick(float DeltaSeconds) override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float TurnRateGamepad;
@@ -55,8 +55,8 @@ protected:
 
 
 public:
-	/** Returns FirstPersonCameraComponent subobject **/
+	
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
+	
 };
 

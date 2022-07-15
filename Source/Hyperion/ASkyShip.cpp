@@ -21,8 +21,7 @@ ASkyShip::ASkyShip()
 	ForwardArrow->SetRelativeLocation(FVector(1500,0,0));
 	LeftArrow -> SetRelativeLocation(FVector(0,800,0));
 	RightArrow ->SetRelativeLocation(FVector(0,-800,0));
-
-
+	
 
 	const ConstructorHelpers::FObjectFinder<UStaticMesh> CorpusMesh(TEXT("/Game/Models/Ship_Mesh"));
 	if (CorpusMesh.Succeeded())

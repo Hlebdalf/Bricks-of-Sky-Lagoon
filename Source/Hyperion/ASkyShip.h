@@ -31,13 +31,13 @@ public:
 	ASkyShip();
 
 protected:
-	UPROPERTY(EditAnywhere, Category="MovementSettings")
+	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float AngDamping = 20;
-	UPROPERTY(EditAnywhere, Category="MovementSettings")
+	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float LinDamping = 10;
-	UPROPERTY(EditAnywhere, Category="MovementSettings")
+	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float UpForceMP = 1;
-	UPROPERTY(EditAnywhere, Category="MovementSettings")
+	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float SpeedMP = 1;
 	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float SkyLevel = 0;
