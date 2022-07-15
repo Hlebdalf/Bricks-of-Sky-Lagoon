@@ -42,9 +42,9 @@ protected:
 	void MoveForward(float Val);
 	
 	void Run();
+	
 	void StopRuning();
 
-	/** Handles strafing movement, left and right */
 	void MoveRight(float Val);
 
 	void TurnAtRate(float Rate);

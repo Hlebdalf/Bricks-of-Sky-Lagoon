@@ -17,14 +17,24 @@ ASkyShip::ASkyShip()
 	RightArrow->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LeftArrow->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
+	BackArrow->SetRelativeLocation(FVector(-1500,0,0));
+	ForwardArrow->SetRelativeLocation(FVector(1500,0,0));
+	LeftArrow -> SetRelativeLocation(FVector(0,800,0));
+	RightArrow ->SetRelativeLocation(FVector(0,-800,0));
+
+
+
 	const ConstructorHelpers::FObjectFinder<UStaticMesh> CorpusMesh(TEXT("/Game/Models/Ship_Mesh"));
 	if (CorpusMesh.Succeeded())
 	{
 		SkyShipCorpus -> SetStaticMesh(CorpusMesh.Object);
+		SkyShipCorpus -> SetSimulatePhysics(true);
+		SkyShipCorpus ->SetAngularDamping(AngDamping);
+		SkyShipCorpus -> SetLinearDamping(LinDamping);
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, "NoneMEsh");
+		UE_LOG(LogTemp, Warning, TEXT("CORPUS MESH NOT FOUND!"));
 	}
 }
 
@@ -49,6 +59,9 @@ void ASkyShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ASkyShip::UpdatePhysics()
 {
-	//SkyShipCorpus->AddForceAtLocationLocal(FVector(0,0,UpForceMP),ForwardArrow->GetRelativeLocation());
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0,0,UpForceMP * (SkyLevel- ForwardArrow->GetComponentLocation().Z)),ForwardArrow->GetRelativeLocation());
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0,0,UpForceMP * (SkyLevel- BackArrow->GetComponentLocation().Z)),BackArrow->GetRelativeLocation());
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0,0,UpForceMP * (SkyLevel- LeftArrow->GetComponentLocation().Z)),LeftArrow->GetRelativeLocation());
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0,0,UpForceMP * (SkyLevel- RightArrow->GetComponentLocation().Z)),RightArrow->GetRelativeLocation());
 }
 

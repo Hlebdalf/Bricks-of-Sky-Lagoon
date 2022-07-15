@@ -84,7 +84,7 @@ void AHyperionCharacter::LookUpAtRate(float Rate)
 void AHyperionCharacter::Run()
 {
 	FoV = 120;
-	UPlayerMovement -> MaxWalkSpeed = 1200;
+	UPlayerMovement -> MaxWalkSpeed = 1000;
 }
 void AHyperionCharacter::StopRuning()
 {

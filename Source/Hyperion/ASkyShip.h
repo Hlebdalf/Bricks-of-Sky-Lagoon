@@ -31,14 +31,19 @@ public:
 	ASkyShip();
 
 protected:
-	
+	UPROPERTY(EditAnywhere, Category="MovementSettings")
+	float AngDamping = 20;
+	UPROPERTY(EditAnywhere, Category="MovementSettings")
+	float LinDamping = 10;
 	UPROPERTY(EditAnywhere, Category="MovementSettings")
 	float UpForceMP = 1;
 	UPROPERTY(EditAnywhere, Category="MovementSettings")
 	float SpeedMP = 1;
+	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float SkyLevel = 0;
 	
 	virtual void BeginPlay() override;
+	
 	void UpdatePhysics();
 	
 	
