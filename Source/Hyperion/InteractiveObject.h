@@ -21,16 +21,23 @@ class HYPERION_API AInteractiveObject : public APawn
 	APlayerController* OwnerPlayerController;
 	UPROPERTY(Replicated)
 	bool bIsControlling=false;
-
-	/*UFUNCTION()
-	void OnIsControllingChanged();*/
 	
 	UFUNCTION(Server, Reliable)
 	void PossessToCharacter();
+
+	UFUNCTION(Server, Unreliable)
+	void SetInputDirection(float LeftRightValue,float ForwardBackValue);
 	
 	
 public:
 	AInteractiveObject();
+	UPROPERTY(Replicated)
+	FVector2D InputDirection = FVector2D(0,0);
+	
+	UFUNCTION()
+	void SetInputLeftRightValue(float Value);
+	UFUNCTION()
+	void SetInputForwardBackValue(float Value);
 	UFUNCTION(Server, Reliable)
 	void SetHyperionCharacter(ACharacter* object);
 	UFUNCTION()
@@ -44,13 +51,5 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	UFUNCTION()	
-	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-						class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-						const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex){};
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };
