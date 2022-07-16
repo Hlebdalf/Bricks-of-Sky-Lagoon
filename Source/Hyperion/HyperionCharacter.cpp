@@ -1,10 +1,15 @@
 #include "HyperionCharacter.h"
+
+#include "ChangableObject.h"
 #include "HyperionProjectile.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameSession.h"
 #include "GameFramework/InputSettings.h"
+#include "GameFramework/PlayerState.h"
+
 // AHyperionCharacter
 
 AHyperionCharacter::AHyperionCharacter()
@@ -54,6 +59,8 @@ void AHyperionCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AHyperionCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AHyperionCharacter::LookUpAtRate);
+
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AHyperionCharacter::Interact);
 	
 }
 
@@ -95,18 +102,71 @@ void AHyperionCharacter::StopRuning()
 	UPlayerMovement -> MaxWalkSpeed = 600;
 }
 
+void AHyperionCharacter::Interact()
+{
+	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, FString::SanitizeFloat(UPlayerMovement ->MaxWalkSpeed));
+	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, FString::SanitizeFloat(UPlayerMovement ->MaxWalkSpeed));
+	InteractServer();
+}
+
+void AHyperionCharacter::InteractServer_Implementation()
+{
+	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, bIsCanControl ? "True" : "False");
+	if (bIsCanControl)
+	{
+		StopMovement();
+		GetController()->AController::Possess(ChangableObject);
+		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, "Posses.....");
+		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, ChangableObject == nullptr? "Null":"Full");
+	}
+}
+
+void AHyperionCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AHyperionCharacter, bIsCanControl);
+	DOREPLIFETIME(AHyperionCharacter, ChangableObject);
+}
+
+
 void  AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && (OtherActor != this) && OtherComp) 
+	if (OtherActor && (OtherActor) && OtherComp) 
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("CharacterOverlapBegin"));
+		ChangableObject = Cast<AChangableObject>(OtherActor);
+		if (ChangableObject != nullptr)
+		{
+			SetChangableObject(ChangableObject);
+			SetIsCanControl(true);
+		}
 	}
 }
 
 void AHyperionCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && (OtherActor != this) && OtherComp) 
+	if (OtherActor && (OtherActor) && OtherComp) 
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("CharacterOverlapEnd"));
+		ChangableObject = Cast<AChangableObject>(OtherActor);
+		if (ChangableObject != nullptr)
+		{
+			SetChangableObject(ChangableObject);
+			SetIsCanControl(false);
+		}
 	}
+}
+
+void AHyperionCharacter::SetIsCanControl_Implementation(bool val)
+{
+	bIsCanControl = val;
+}
+
+void AHyperionCharacter::SetChangableObject_Implementation(AChangableObject* object)
+{
+	ChangableObject = object;
+}
+
+
+void AHyperionCharacter::StopMovement_Implementation()
+{
+	UPlayerMovement ->SetActive(false);
 }
