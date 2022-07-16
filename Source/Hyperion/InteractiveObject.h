@@ -15,18 +15,32 @@ class HYPERION_API AInteractiveObject : public APawn
 	UStaticMeshComponent*UInteractiveMesh;
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* InteractiveObjectTrigger;
+	UPROPERTY(Replicated)
+	ACharacter* HyperionCharacter;
+	UPROPERTY()
+	APlayerController* OwnerPlayerController;
+	/*UPROPERTY(Replicated)
+	bool bIsControlling=false;*/
+	
+	UFUNCTION(Server, Reliable)
+	void SetHyperionCharacter(ACharacter* object);
+	UFUNCTION(Server, Reliable)
+	void PossessToCharacter();
+	
 	
 public:
-	// Sets default values for this pawn's properties
 	AInteractiveObject();
-
+	/*UFUNCTION()
+	bool GetIsControlling();
+	UFUNCTION(NetMulticast, Reliable)
+	void SetIsControlling(bool how);*/
+	
 protected:
-	// Called when the game starts or when spawned
+	UFUNCTION()
+	void PressedFButton();
 	virtual void BeginPlay() override;
-	
-	
 
-public:	
+public:
 	UFUNCTION()	
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
 						class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
@@ -34,6 +48,6 @@ public:
 
 	UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex){};
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

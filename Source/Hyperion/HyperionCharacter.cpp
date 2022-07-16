@@ -1,6 +1,5 @@
 
 #include "HyperionCharacter.h"
-
 #include "Net/UnrealNetwork.h"
 #include "HyperionProjectile.h"
 #include "Camera/CameraComponent.h"
@@ -10,8 +9,6 @@
 #include "GameFramework/InputSettings.h"
 #include "ChangeableObject.h"
 
-
-// AHyperionCharacter
 
 AHyperionCharacter::AHyperionCharacter()
 {
@@ -105,20 +102,20 @@ void AHyperionCharacter::StopRuning()
 
 void AHyperionCharacter::Interact()
 {
-	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, FString::SanitizeFloat(UPlayerMovement ->MaxWalkSpeed));
-	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, FString::SanitizeFloat(UPlayerMovement ->MaxWalkSpeed));
 	InteractServer();
 }
 
 void AHyperionCharacter::InteractServer_Implementation()
 {
 	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, bIsCanControl ? "True" : "False");
-	if (bIsCanControl)
+	if (bIsCanControl && ChangeableObject!=nullptr)
 	{
+		//ChangeableObject->SetIsControlling(true);
 		StopMovement();
 		GetController()->AController::Possess(ChangeableObject);
+		ReturnMovement();
 		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, "Posses.....");
-		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, ChangeableObject == nullptr? "Null":"Full");
+		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, ChangeableObject->IsPawnControlled()? "Controlled":"NonControlled");
 	}
 }
 
@@ -132,7 +129,6 @@ void AHyperionCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 void  AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, OtherActor->GetName());
 	if (OtherActor && (OtherActor) && OtherComp) 
 	{
 		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, bIsCanControl ? "True" : "False");
@@ -153,7 +149,6 @@ void AHyperionCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActo
 		ChangeableObject = Cast<AChangeableObject>(OtherActor);
 		if (ChangeableObject != nullptr)
 		{
-			SetChangeableObject(ChangeableObject);
 			SetIsCanControl(false);
 		}
 	}
@@ -167,10 +162,16 @@ void AHyperionCharacter::SetIsCanControl_Implementation(bool val)
 void AHyperionCharacter::SetChangeableObject_Implementation(AChangeableObject* object)
 {
 	ChangeableObject = object;
+	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, object->GetName());
 }
 
 
 void AHyperionCharacter::StopMovement_Implementation()
 {
 	UPlayerMovement ->SetActive(false);
+}
+
+void AHyperionCharacter::ReturnMovement_Implementation()
+{
+	UPlayerMovement ->SetActive(true);
 }

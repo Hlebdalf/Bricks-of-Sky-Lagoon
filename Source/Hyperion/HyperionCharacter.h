@@ -25,6 +25,8 @@ class AHyperionCharacter : public ACharacter
 	UCapsuleComponent* CharacterCollision;
 	UPROPERTY(Replicated)
 	AChangeableObject* ChangeableObject;
+	
+	UPROPERTY()
 	float FoV;
 	UPROPERTY()
 	bool bIsControlling = false;
@@ -39,6 +41,8 @@ class AHyperionCharacter : public ACharacter
 	void SetChangeableObject(AChangeableObject* object);
 	UFUNCTION(NetMulticast, Reliable)
 	void StopMovement();
+	UFUNCTION(NetMulticast, Reliable)
+	void ReturnMovement();
 
 public:
 	AHyperionCharacter();
@@ -50,7 +54,6 @@ public:
 	
 	virtual void Tick(float DeltaSeconds) override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	
 	float TurnRateGamepad;
 
 protected:
