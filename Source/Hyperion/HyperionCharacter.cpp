@@ -131,7 +131,7 @@ void AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedCom
                                         class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                         const FHitResult& SweepResult)
 {
-	if (OtherActor && (OtherActor) && OtherComp)
+	if (OtherActor  && OtherComp)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, "YouCanControl on F ");
 		ChangeableObject = Cast<AChangeableObject>(OtherActor);
@@ -146,7 +146,7 @@ void AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedCom
 void AHyperionCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && (OtherActor) && OtherComp)
+	if (OtherActor  && OtherComp)
 	{
 		ChangeableObject = Cast<AChangeableObject>(OtherActor);
 		if (ChangeableObject != nullptr)

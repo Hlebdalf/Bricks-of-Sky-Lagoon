@@ -1,9 +1,12 @@
 #include "ASkyShip.h"
 
+
+
 ASkyShip::ASkyShip()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	SkyShipCorpus = CreateDefaultSubobject<UStaticMeshComponent>("SkyShipCorpus");
+	
 	RootComponent = SkyShipCorpus;
 
 	ForwardArrow = CreateDefaultSubobject<UArrowComponent>("ForwardArrow");
@@ -20,6 +23,14 @@ ASkyShip::ASkyShip()
 	ForwardArrow->SetRelativeLocation(FVector(1500, 0, 0));
 	LeftArrow->SetRelativeLocation(FVector(0, 800, 0));
 	RightArrow->SetRelativeLocation(FVector(0, -800, 0));
+
+	/*AWheel = CreateDefaultSubobject<UChildActorComponent>(TEXT("Wheel"));
+	AWheel->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);*/
+	
+	
+	/*AWheel ->SetChildActorClass([AChangeableObject]::StaticClass());
+	AWheel->ChildActorClass = 
+	AWheel->CreateChildActor();*/
 
 	const ConstructorHelpers::FObjectFinder<UStaticMesh> CorpusMesh(TEXT("/Game/Models/Ship_Mesh"));
 	if (CorpusMesh.Succeeded())

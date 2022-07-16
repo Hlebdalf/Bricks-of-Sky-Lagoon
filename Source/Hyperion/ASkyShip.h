@@ -7,7 +7,6 @@
 #include "GameFramework/Pawn.h"
 #include "ASkyShip.generated.h"
 
-
 UCLASS()
 class HYPERION_API ASkyShip : public APawn
 {
@@ -15,7 +14,8 @@ class HYPERION_API ASkyShip : public APawn
 	
 	UPROPERTY()
 	UStaticMeshComponent* SkyShipCorpus;
-	
+	/*UPROPERTY(EditInstanceOnly)
+	UChildActorComponent* AWheel;*/
 	UPROPERTY(EditDefaultsOnly)
 	UArrowComponent* ForwardArrow;
 	UPROPERTY(EditDefaultsOnly)
