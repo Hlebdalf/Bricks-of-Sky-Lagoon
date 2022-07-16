@@ -37,12 +37,13 @@ void AInteractiveObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 void AInteractiveObject::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && (OtherActor) && OtherComp) 
+	if (OtherActor && (OtherActor) && OtherComp  && !GetIsControlling()) 
 	{
 		HyperionCharacter = Cast<ACharacter>(OtherActor);
 		if (HyperionCharacter != nullptr)
 		{
-			SetHyperionCharacter(HyperionCharacter);
+			
+			//GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Orange, GetIsControlling()?"ControllingInt":"NoncontrollingInt");
 		}
 	}
 }
@@ -52,7 +53,8 @@ void AInteractiveObject::PressedFButton()
 	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Black, "Pressed F On Object");
 	if(GetPlayerState() != nullptr)
 	{
-		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Black, GetPlayerState()->GetPlayerController()->GetName());
+		//GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Black, GetPlayerState()->GetPlayerController()->GetName());
+		SetIsControlling(false);
 		PossessToCharacter();
 	}
 }
@@ -68,7 +70,7 @@ void AInteractiveObject::PossessToCharacter_Implementation()
 }
 
 
-/*bool AInteractiveObject::GetIsControlling()
+bool AInteractiveObject::GetIsControlling()
 {
 	return bIsControlling;
 }
@@ -76,4 +78,4 @@ void AInteractiveObject::PossessToCharacter_Implementation()
 void AInteractiveObject::SetIsControlling_Implementation(bool how)
 {
 	bIsControlling = how;
-}*/
+}

@@ -19,21 +19,24 @@ class HYPERION_API AInteractiveObject : public APawn
 	ACharacter* HyperionCharacter;
 	UPROPERTY()
 	APlayerController* OwnerPlayerController;
-	/*UPROPERTY(Replicated)
-	bool bIsControlling=false;*/
+	UPROPERTY(Replicated)
+	bool bIsControlling=false;
+
+	/*UFUNCTION()
+	void OnIsControllingChanged();*/
 	
-	UFUNCTION(Server, Reliable)
-	void SetHyperionCharacter(ACharacter* object);
 	UFUNCTION(Server, Reliable)
 	void PossessToCharacter();
 	
 	
 public:
 	AInteractiveObject();
-	/*UFUNCTION()
+	UFUNCTION(Server, Reliable)
+	void SetHyperionCharacter(ACharacter* object);
+	UFUNCTION()
 	bool GetIsControlling();
-	UFUNCTION(NetMulticast, Reliable)
-	void SetIsControlling(bool how);*/
+	UFUNCTION(Server, Reliable)
+	void SetIsControlling(bool how);
 	
 protected:
 	UFUNCTION()

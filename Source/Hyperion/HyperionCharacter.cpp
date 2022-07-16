@@ -107,15 +107,17 @@ void AHyperionCharacter::Interact()
 
 void AHyperionCharacter::InteractServer_Implementation()
 {
-	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, bIsCanControl ? "True" : "False");
+	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::White, "PRESSED F");
 	if (bIsCanControl && ChangeableObject!=nullptr)
 	{
-		//ChangeableObject->SetIsControlling(true);
-		StopMovement();
-		GetController()->AController::Possess(ChangeableObject);
-		ReturnMovement();
-		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, "Posses.....");
-		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, ChangeableObject->IsPawnControlled()? "Controlled":"NonControlled");
+		if(!ChangeableObject->GetIsControlling())
+		{
+			ChangeableObject->SetIsControlling(true);
+			ChangeableObject->SetHyperionCharacter(this);
+			StopMovement();
+			GetController()->AController::Possess(ChangeableObject);
+			ReturnMovement();
+		}
 	}
 }
 
@@ -131,7 +133,7 @@ void  AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedCo
 {
 	if (OtherActor && (OtherActor) && OtherComp) 
 	{
-		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, bIsCanControl ? "True" : "False");
+		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::White, "YouCanControl on F ");
 		ChangeableObject = Cast<AChangeableObject>(OtherActor);
 		if (ChangeableObject != nullptr)
 		{
@@ -145,7 +147,6 @@ void AHyperionCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActo
 {
 	if (OtherActor && (OtherActor) && OtherComp) 
 	{
-		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, bIsCanControl ? "True" : "False");
 		ChangeableObject = Cast<AChangeableObject>(OtherActor);
 		if (ChangeableObject != nullptr)
 		{
@@ -162,7 +163,6 @@ void AHyperionCharacter::SetIsCanControl_Implementation(bool val)
 void AHyperionCharacter::SetChangeableObject_Implementation(AChangeableObject* object)
 {
 	ChangeableObject = object;
-	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, object->GetName());
 }
 
 
