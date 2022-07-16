@@ -1,4 +1,3 @@
-
 #include "HyperionCharacter.h"
 #include "Net/UnrealNetwork.h"
 #include "HyperionProjectile.h"
@@ -20,7 +19,7 @@ AHyperionCharacter::AHyperionCharacter()
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 	UPlayerMovement = GetCharacterMovement();
 	CharacterCollision = GetCapsuleComponent();
-	CharacterCollision ->SetCollisionProfileName("Character");
+	CharacterCollision->SetCollisionProfileName("Character");
 }
 
 void AHyperionCharacter::BeginPlay()
@@ -32,34 +31,32 @@ void AHyperionCharacter::BeginPlay()
 void AHyperionCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	FirstPersonCameraComponent -> FieldOfView = FMath::FInterpTo(FirstPersonCameraComponent->FieldOfView, FoV, DeltaSeconds, 8);
+	FirstPersonCameraComponent->FieldOfView = FMath::FInterpTo(FirstPersonCameraComponent->FieldOfView, FoV,
+	                                                           DeltaSeconds, 8);
 }
-
 
 
 void AHyperionCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
-
 	check(PlayerInputComponent);
-	
+
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AHyperionCharacter::Run);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AHyperionCharacter::StopRuning);
 
-	CharacterCollision->OnComponentBeginOverlap.AddDynamic( this, &AHyperionCharacter::OnOverlapBegin);
-	CharacterCollision->OnComponentEndOverlap.AddDynamic( this, &AHyperionCharacter::OnOverlapEnd);
+	CharacterCollision->OnComponentBeginOverlap.AddDynamic(this, &AHyperionCharacter::OnOverlapBegin);
+	CharacterCollision->OnComponentEndOverlap.AddDynamic(this, &AHyperionCharacter::OnOverlapEnd);
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AHyperionCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AHyperionCharacter::MoveRight);
-	
+
 	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AHyperionCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AHyperionCharacter::LookUpAtRate);
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AHyperionCharacter::Interact);
-	
 }
 
 
@@ -92,12 +89,13 @@ void AHyperionCharacter::LookUpAtRate(float Rate)
 void AHyperionCharacter::Run()
 {
 	FoV = 120;
-	UPlayerMovement -> MaxWalkSpeed = 1000;
+	UPlayerMovement->MaxWalkSpeed = 1000;
 }
+
 void AHyperionCharacter::StopRuning()
 {
 	FoV = 100;
-	UPlayerMovement -> MaxWalkSpeed = 600;
+	UPlayerMovement->MaxWalkSpeed = 600;
 }
 
 void AHyperionCharacter::Interact()
@@ -107,10 +105,10 @@ void AHyperionCharacter::Interact()
 
 void AHyperionCharacter::InteractServer_Implementation()
 {
-	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::White, "PRESSED F");
-	if (bIsCanControl && ChangeableObject!=nullptr)
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, "PRESSED F");
+	if (bIsCanControl && ChangeableObject != nullptr)
 	{
-		if(!ChangeableObject->GetIsControlling())
+		if (!ChangeableObject->GetIsControlling())
 		{
 			ChangeableObject->SetIsControlling(true);
 			ChangeableObject->SetHyperionCharacter(this);
@@ -129,11 +127,13 @@ void AHyperionCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 }
 
 
-void  AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+                                        class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                        const FHitResult& SweepResult)
 {
-	if (OtherActor && (OtherActor) && OtherComp) 
+	if (OtherActor && (OtherActor) && OtherComp)
 	{
-		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::White, "YouCanControl on F ");
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, "YouCanControl on F ");
 		ChangeableObject = Cast<AChangeableObject>(OtherActor);
 		if (ChangeableObject != nullptr)
 		{
@@ -143,9 +143,10 @@ void  AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedCo
 	}
 }
 
-void AHyperionCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AHyperionCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && (OtherActor) && OtherComp) 
+	if (OtherActor && (OtherActor) && OtherComp)
 	{
 		ChangeableObject = Cast<AChangeableObject>(OtherActor);
 		if (ChangeableObject != nullptr)
@@ -168,10 +169,10 @@ void AHyperionCharacter::SetChangeableObject_Implementation(AChangeableObject* o
 
 void AHyperionCharacter::StopMovement_Implementation()
 {
-	UPlayerMovement ->SetActive(false);
+	UPlayerMovement->SetActive(false);
 }
 
 void AHyperionCharacter::ReturnMovement_Implementation()
 {
-	UPlayerMovement ->SetActive(true);
+	UPlayerMovement->SetActive(true);
 }

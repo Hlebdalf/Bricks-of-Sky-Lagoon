@@ -1,4 +1,3 @@
-
 #include "ASkyShip.h"
 
 ASkyShip::ASkyShip()
@@ -17,19 +16,18 @@ ASkyShip::ASkyShip()
 	RightArrow->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LeftArrow->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
-	BackArrow->SetRelativeLocation(FVector(-1500,0,0));
-	ForwardArrow->SetRelativeLocation(FVector(1500,0,0));
-	LeftArrow -> SetRelativeLocation(FVector(0,800,0));
-	RightArrow ->SetRelativeLocation(FVector(0,-800,0));
-	
+	BackArrow->SetRelativeLocation(FVector(-1500, 0, 0));
+	ForwardArrow->SetRelativeLocation(FVector(1500, 0, 0));
+	LeftArrow->SetRelativeLocation(FVector(0, 800, 0));
+	RightArrow->SetRelativeLocation(FVector(0, -800, 0));
 
 	const ConstructorHelpers::FObjectFinder<UStaticMesh> CorpusMesh(TEXT("/Game/Models/Ship_Mesh"));
 	if (CorpusMesh.Succeeded())
 	{
-		SkyShipCorpus -> SetStaticMesh(CorpusMesh.Object);
-		SkyShipCorpus -> SetSimulatePhysics(true);
-		SkyShipCorpus ->SetAngularDamping(AngDamping);
-		SkyShipCorpus -> SetLinearDamping(LinDamping);
+		SkyShipCorpus->SetStaticMesh(CorpusMesh.Object);
+		SkyShipCorpus->SetSimulatePhysics(true);
+		SkyShipCorpus->SetAngularDamping(AngDamping);
+		SkyShipCorpus->SetLinearDamping(LinDamping);
 	}
 	else
 	{
@@ -40,27 +38,28 @@ ASkyShip::ASkyShip()
 void ASkyShip::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ASkyShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	ASkyShip::UpdatePhysics();
-
 }
 
 void ASkyShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ASkyShip::UpdatePhysics()
 {
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0,0,UpForceMP * (SkyLevel- ForwardArrow->GetComponentLocation().Z)),ForwardArrow->GetRelativeLocation());
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0,0,UpForceMP * (SkyLevel- BackArrow->GetComponentLocation().Z)),BackArrow->GetRelativeLocation());
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0,0,UpForceMP * (SkyLevel- LeftArrow->GetComponentLocation().Z)),LeftArrow->GetRelativeLocation());
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0,0,UpForceMP * (SkyLevel- RightArrow->GetComponentLocation().Z)),RightArrow->GetRelativeLocation());
+	SkyShipCorpus->AddForceAtLocationLocal(
+		FVector(0, 0, UpForceMP * (SkyLevel - ForwardArrow->GetComponentLocation().Z)),
+		ForwardArrow->GetRelativeLocation());
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - BackArrow->GetComponentLocation().Z)),
+	                                       BackArrow->GetRelativeLocation());
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - LeftArrow->GetComponentLocation().Z)),
+	                                       LeftArrow->GetRelativeLocation());
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - RightArrow->GetComponentLocation().Z)),
+	                                       RightArrow->GetRelativeLocation());
 }
-

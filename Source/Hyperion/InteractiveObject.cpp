@@ -12,10 +12,10 @@ AInteractiveObject::AInteractiveObject()
 	RootComponent = UInteractiveMesh;
 	InteractiveObjectTrigger = CreateDefaultSubobject<UBoxComponent>("BoxCollider");
 	InteractiveObjectTrigger->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	InteractiveObjectTrigger->SetRelativeLocation(FVector(0,0,0));
+	InteractiveObjectTrigger->SetRelativeLocation(FVector(0, 0, 0));
 	InteractiveObjectTrigger->SetCollisionProfileName(TEXT("Trigger"));
-	InteractiveObjectTrigger->OnComponentBeginOverlap.AddDynamic( this, &AInteractiveObject::OnOverlapBegin);
-	InteractiveObjectTrigger->OnComponentEndOverlap.AddDynamic( this, &AInteractiveObject::OnOverlapEnd);
+	InteractiveObjectTrigger->OnComponentBeginOverlap.AddDynamic(this, &AInteractiveObject::OnOverlapBegin);
+	InteractiveObjectTrigger->OnComponentEndOverlap.AddDynamic(this, &AInteractiveObject::OnOverlapEnd);
 }
 
 void AInteractiveObject::BeginPlay()
@@ -26,7 +26,7 @@ void AInteractiveObject::BeginPlay()
 void AInteractiveObject::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent -> BindAction("Interact", IE_Pressed,this, &AInteractiveObject::PressedFButton);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AInteractiveObject::PressedFButton);
 }
 
 void AInteractiveObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -35,14 +35,15 @@ void AInteractiveObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(AInteractiveObject, HyperionCharacter);
 }
 
-void AInteractiveObject::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AInteractiveObject::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                        const FHitResult& SweepResult)
 {
-	if (OtherActor && (OtherActor) && OtherComp  && !GetIsControlling()) 
+	if (OtherActor && (OtherActor) && OtherComp && !GetIsControlling())
 	{
 		HyperionCharacter = Cast<ACharacter>(OtherActor);
 		if (HyperionCharacter != nullptr)
 		{
-			
 			//GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Orange, GetIsControlling()?"ControllingInt":"NoncontrollingInt");
 		}
 	}
@@ -50,8 +51,8 @@ void AInteractiveObject::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 
 void AInteractiveObject::PressedFButton()
 {
-	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Black, "Pressed F On Object");
-	if(GetPlayerState() != nullptr)
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Black, "Pressed F On Object");
+	if (GetPlayerState() != nullptr)
 	{
 		//GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Black, GetPlayerState()->GetPlayerController()->GetName());
 		SetIsControlling(false);
@@ -59,7 +60,7 @@ void AInteractiveObject::PressedFButton()
 	}
 }
 
-void  AInteractiveObject::SetHyperionCharacter_Implementation(ACharacter* object)
+void AInteractiveObject::SetHyperionCharacter_Implementation(ACharacter* object)
 {
 	HyperionCharacter = object;
 }
