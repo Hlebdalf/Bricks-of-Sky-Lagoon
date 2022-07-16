@@ -1,9 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
-#include "Net/UnrealNetwork.h"
 #include "CoreMinimal.h"
-#include "ChangableObject.h"
+#include "ChangeableObject.h"
 #include "GameFramework/Character.h"
 #include "HyperionCharacter.generated.h"
 
@@ -18,14 +17,14 @@ UCLASS(config=Game)
 class AHyperionCharacter : public ACharacter
 {	
 	GENERATED_BODY()
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	UCharacterMovementComponent* UPlayerMovement;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 	UPROPERTY()
 	UCapsuleComponent* CharacterCollision;
 	UPROPERTY(Replicated)
-	AChangableObject* ChangableObject;
+	AChangeableObject* ChangeableObject;
 	float FoV;
 	UPROPERTY()
 	bool bIsControlling = false;
@@ -37,7 +36,7 @@ class AHyperionCharacter : public ACharacter
 	UFUNCTION(Server, Reliable)
 	void SetIsCanControl(bool val);
 	UFUNCTION(Server, Reliable)
-	void SetChangableObject(AChangableObject* object);
+	void SetChangeableObject(AChangeableObject* object);
 	UFUNCTION(NetMulticast, Reliable)
 	void StopMovement();
 

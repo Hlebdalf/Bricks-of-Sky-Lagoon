@@ -1,14 +1,15 @@
+
 #include "HyperionCharacter.h"
 
-#include "ChangableObject.h"
+#include "Net/UnrealNetwork.h"
 #include "HyperionProjectile.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/GameSession.h"
 #include "GameFramework/InputSettings.h"
-#include "GameFramework/PlayerState.h"
+#include "ChangeableObject.h"
+
 
 // AHyperionCharacter
 
@@ -22,7 +23,7 @@ AHyperionCharacter::AHyperionCharacter()
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 	UPlayerMovement = GetCharacterMovement();
 	CharacterCollision = GetCapsuleComponent();
-	CharacterCollision -> SetCollisionProfileName("Pawn");
+	CharacterCollision ->SetCollisionProfileName("Character");
 }
 
 void AHyperionCharacter::BeginPlay()
@@ -115,9 +116,9 @@ void AHyperionCharacter::InteractServer_Implementation()
 	if (bIsCanControl)
 	{
 		StopMovement();
-		GetController()->AController::Possess(ChangableObject);
+		GetController()->AController::Possess(ChangeableObject);
 		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, "Posses.....");
-		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, ChangableObject == nullptr? "Null":"Full");
+		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, ChangeableObject == nullptr? "Null":"Full");
 	}
 }
 
@@ -125,18 +126,20 @@ void AHyperionCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AHyperionCharacter, bIsCanControl);
-	DOREPLIFETIME(AHyperionCharacter, ChangableObject);
+	DOREPLIFETIME(AHyperionCharacter, ChangeableObject);
 }
 
 
 void  AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, OtherActor->GetName());
 	if (OtherActor && (OtherActor) && OtherComp) 
 	{
-		ChangableObject = Cast<AChangableObject>(OtherActor);
-		if (ChangableObject != nullptr)
+		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, bIsCanControl ? "True" : "False");
+		ChangeableObject = Cast<AChangeableObject>(OtherActor);
+		if (ChangeableObject != nullptr)
 		{
-			SetChangableObject(ChangableObject);
+			SetChangeableObject(ChangeableObject);
 			SetIsCanControl(true);
 		}
 	}
@@ -146,10 +149,11 @@ void AHyperionCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActo
 {
 	if (OtherActor && (OtherActor) && OtherComp) 
 	{
-		ChangableObject = Cast<AChangableObject>(OtherActor);
-		if (ChangableObject != nullptr)
+		GEngine-> AddOnScreenDebugMessage(-1,5, FColor::Green, bIsCanControl ? "True" : "False");
+		ChangeableObject = Cast<AChangeableObject>(OtherActor);
+		if (ChangeableObject != nullptr)
 		{
-			SetChangableObject(ChangableObject);
+			SetChangeableObject(ChangeableObject);
 			SetIsCanControl(false);
 		}
 	}
@@ -160,9 +164,9 @@ void AHyperionCharacter::SetIsCanControl_Implementation(bool val)
 	bIsCanControl = val;
 }
 
-void AHyperionCharacter::SetChangableObject_Implementation(AChangableObject* object)
+void AHyperionCharacter::SetChangeableObject_Implementation(AChangeableObject* object)
 {
-	ChangableObject = object;
+	ChangeableObject = object;
 }
 
 

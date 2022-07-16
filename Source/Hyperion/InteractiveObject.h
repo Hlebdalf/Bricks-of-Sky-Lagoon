@@ -11,7 +11,11 @@ UCLASS()
 class HYPERION_API AInteractiveObject : public APawn
 {
 	GENERATED_BODY()
-
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent*UInteractiveMesh;
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* InteractiveObjectTrigger;
+	
 public:
 	// Sets default values for this pawn's properties
 	AInteractiveObject();
@@ -19,8 +23,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UPROPERTY(EditInstanceOnly)
-	UBoxComponent* InteractiveObjectTrigger;
+	
 	
 
 public:	
