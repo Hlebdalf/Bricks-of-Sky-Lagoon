@@ -16,7 +16,7 @@ class HYPERION_API AShipboardChangeableObject : public AChangeableObject
 	GENERATED_BODY()
 	UPROPERTY()
 	ASkyShip* SkyShip;
-
-public:
-	AShipboardChangeableObject();
+	
+protected:
+	virtual void BeginPlay() override;
 };

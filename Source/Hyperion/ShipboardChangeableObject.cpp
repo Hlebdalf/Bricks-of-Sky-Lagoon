@@ -3,7 +3,7 @@
 
 #include "ShipboardChangeableObject.h"
 
-AShipboardChangeableObject::AShipboardChangeableObject()
+void AShipboardChangeableObject::BeginPlay()
 {
-	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Cyan, GetAttachParentActor()->GetName());
+	SkyShip = Cast<ASkyShip>(GetDefaultAttachComponent()->GetAttachParent()->GetAttachParent()->GetOwner());
 }
