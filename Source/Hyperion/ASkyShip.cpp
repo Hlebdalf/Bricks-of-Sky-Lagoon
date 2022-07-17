@@ -66,13 +66,13 @@ void ASkyShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ASkyShip::UpdatePhysics()
 {
 	float delta = GetWorld()->DeltaTimeSeconds;
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - ForwardArrow->GetComponentLocation().Z)* delta),
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (TargetSkyLevel  - ForwardArrow->GetComponentLocation().Z)* delta),
 							ForwardArrow->GetRelativeLocation());
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - BackArrow->GetComponentLocation().Z)* delta),
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (TargetSkyLevel  - BackArrow->GetComponentLocation().Z)* delta),
 	                                       BackArrow->GetRelativeLocation());
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - LeftArrow->GetComponentLocation().Z)* delta),
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (TargetSkyLevel - LeftArrow->GetComponentLocation().Z)* delta),
 	                                       LeftArrow->GetRelativeLocation());
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - RightArrow->GetComponentLocation().Z)* delta),
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (TargetSkyLevel - RightArrow->GetComponentLocation().Z)* delta),
 	                                       RightArrow->GetRelativeLocation());
 	SkyShipCorpus->AddTorqueInRadians(FVector(0,0,SkyShipTorque* delta));
 	SkyShipCorpus->AddForce(GetActorForwardVector()*SkyShipSpeedMP);
@@ -83,6 +83,7 @@ void ASkyShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASkyShip, SkyShipTorque);
 	DOREPLIFETIME(ASkyShip, SkyShipSpeedMP);
+	DOREPLIFETIME(ASkyShip, TargetSkyLevel);
 }
 
 void ASkyShip::SetSkyShipTorque_Implementation(float Value)
@@ -94,4 +95,9 @@ void ASkyShip::SetSkyShipSpeedMP_Implementation(float Value)
 {
 	SkyShipSpeedMP = Value;
 	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString::SanitizeFloat(Value));
+}
+
+void ASkyShip::SetTagetSkyLevel_Implementation(float Value)
+{
+	TargetSkyLevel = StartSkyLevel + Value;
 }

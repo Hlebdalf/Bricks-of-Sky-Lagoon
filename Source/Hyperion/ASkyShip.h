@@ -12,7 +12,7 @@ class HYPERION_API ASkyShip : public APawn
 {
 	GENERATED_BODY()
 	
-	UPROPERTY()
+	UPROPERTY(EditInstanceOnly)
 	UStaticMeshComponent* SkyShipCorpus;
 	/*UPROPERTY(EditInstanceOnly)
 	UChildActorComponent* AWheel;*/
@@ -29,6 +29,8 @@ class HYPERION_API ASkyShip : public APawn
 	float SkyShipTorque = 0;
 	UPROPERTY(Replicated)
 	float SkyShipSpeedMP = 1;
+	UPROPERTY(Replicated)
+	float TargetSkyLevel = 0;
 	
 	
 public:
@@ -37,6 +39,8 @@ public:
 	void SetSkyShipTorque(float Value);
 	UFUNCTION(Server, Unreliable)
 	void SetSkyShipSpeedMP(float Value);
+	UFUNCTION(Server, Unreliable)
+	void SetTagetSkyLevel(float Value);
 	
 
 protected:
@@ -47,7 +51,7 @@ protected:
 	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float UpForceMP = 1;
 	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
-	float SkyLevel = 0;
+	float StartSkyLevel = 0;
 	
 	virtual void BeginPlay() override;
 	
