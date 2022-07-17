@@ -75,16 +75,23 @@ void ASkyShip::UpdatePhysics()
 	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - RightArrow->GetComponentLocation().Z)* delta),
 	                                       RightArrow->GetRelativeLocation());
 	SkyShipCorpus->AddTorqueInRadians(FVector(0,0,SkyShipTorque* delta));
+	SkyShipCorpus->AddForce(GetActorForwardVector()*SkyShipSpeedMP);
 }
 
 void ASkyShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASkyShip, SkyShipTorque);
+	DOREPLIFETIME(ASkyShip, SkyShipSpeedMP);
 }
 
 void ASkyShip::SetSkyShipTorque_Implementation(float Value)
 {
 	SkyShipTorque = Value;
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Yellow, FString::SanitizeFloat(Value));
+}
+void ASkyShip::SetSkyShipSpeedMP_Implementation(float Value)
+{
+	SkyShipSpeedMP = Value;
 	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString::SanitizeFloat(Value));
 }

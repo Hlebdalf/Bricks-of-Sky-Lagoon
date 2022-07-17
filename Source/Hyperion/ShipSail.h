@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "ShipboardChangeableObject.h"
-#include "ShipWheel.generated.h"
+#include "ShipSail.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class HYPERION_API AShipWheel : public AShipboardChangeableObject
+class HYPERION_API AShipSail : public AShipboardChangeableObject
 {
 	GENERATED_BODY()
-	
+
 public:
 	virtual void Tick(float DeltaSeconds) override;
 

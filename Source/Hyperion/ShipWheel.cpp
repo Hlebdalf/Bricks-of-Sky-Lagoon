@@ -2,10 +2,6 @@
 
 #include "ShipWheel.h"
 
-AShipWheel::AShipWheel()
-{
-	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Orange, "I AM EXIST!");
-}
 
 void AShipWheel::Tick(float DeltaSeconds)
 {

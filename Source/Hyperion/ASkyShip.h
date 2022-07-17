@@ -27,12 +27,16 @@ class HYPERION_API ASkyShip : public APawn
 
 	UPROPERTY(Replicated)
 	float SkyShipTorque = 0;
+	UPROPERTY(Replicated)
+	float SkyShipSpeedMP = 1;
 	
 	
 public:
 	ASkyShip();
 	UFUNCTION(Server, Unreliable)
 	void SetSkyShipTorque(float Value);
+	UFUNCTION(Server, Unreliable)
+	void SetSkyShipSpeedMP(float Value);
 	
 
 protected:
@@ -42,8 +46,6 @@ protected:
 	float LinDamping = 10;
 	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float UpForceMP = 1;
-	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
-	float SpeedMP = 1;
 	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float SkyLevel = 0;
 	
