@@ -7,16 +7,16 @@
 #include "ChangeableObject.h"
 #include "ShipboardChangeableObject.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class HYPERION_API AShipboardChangeableObject : public AChangeableObject
 {
 	GENERATED_BODY()
-	UPROPERTY()
-	ASkyShip* SkyShip;
-	
+
 protected:
 	virtual void BeginPlay() override;
+	UPROPERTY()
+	ASkyShip* SkyShip;
+public:
+	virtual void Tick(float DeltaSeconds) override;
+	
 };

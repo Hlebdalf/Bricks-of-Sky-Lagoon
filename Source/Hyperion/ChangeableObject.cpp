@@ -3,10 +3,18 @@
 
 #include "ChangeableObject.h"
 
+AChangeableObject::AChangeableObject()
+{
+	ChangeableObjectCamera = CreateDefaultSubobject<UCameraComponent>("ChangeableCamera");
+	ChangeableObjectCamera->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+}
+
 void AChangeableObject::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
 	UpdateValue();
 }
+
 
 void AChangeableObject::UpdateValue()
 {
@@ -17,6 +25,5 @@ void AChangeableObject::UpdateValue()
 		&& Value.Y + inputVector.Y < DirectionThresholdRoof.Y)
 	{
 		Value += inputVector;
-		//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Emerald, Value.ToString());
 	}
 }

@@ -24,11 +24,16 @@ class HYPERION_API ASkyShip : public APawn
 	UArrowComponent* LeftArrow;
 	UPROPERTY(EditDefaultsOnly)
 	UArrowComponent* RightArrow;
+
+	UPROPERTY(Replicated)
+	float SkyShipTorque = 0;
 	
 	
 public:
-	// Sets default values for this pawn's properties
 	ASkyShip();
+	UFUNCTION(Server, Unreliable)
+	void SetSkyShipTorque(float Value);
+	
 
 protected:
 	UPROPERTY(EditInstanceOnly, Category="MovementSettings")

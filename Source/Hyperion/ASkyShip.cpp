@@ -1,5 +1,6 @@
 #include "ASkyShip.h"
 
+#include "Net/UnrealNetwork.h"
 
 
 ASkyShip::ASkyShip()
@@ -64,13 +65,26 @@ void ASkyShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ASkyShip::UpdatePhysics()
 {
-	SkyShipCorpus->AddForceAtLocationLocal(
-		FVector(0, 0, UpForceMP * (SkyLevel - ForwardArrow->GetComponentLocation().Z)),
-		ForwardArrow->GetRelativeLocation());
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - BackArrow->GetComponentLocation().Z)),
+	float delta = GetWorld()->DeltaTimeSeconds;
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - ForwardArrow->GetComponentLocation().Z)* delta),
+							ForwardArrow->GetRelativeLocation());
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - BackArrow->GetComponentLocation().Z)* delta),
 	                                       BackArrow->GetRelativeLocation());
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - LeftArrow->GetComponentLocation().Z)),
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - LeftArrow->GetComponentLocation().Z)* delta),
 	                                       LeftArrow->GetRelativeLocation());
-	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - RightArrow->GetComponentLocation().Z)),
+	SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (SkyLevel - RightArrow->GetComponentLocation().Z)* delta),
 	                                       RightArrow->GetRelativeLocation());
+	SkyShipCorpus->AddTorqueInRadians(FVector(0,0,SkyShipTorque* delta));
+}
+
+void ASkyShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASkyShip, SkyShipTorque);
+}
+
+void ASkyShip::SetSkyShipTorque_Implementation(float Value)
+{
+	SkyShipTorque = Value;
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString::SanitizeFloat(Value));
 }

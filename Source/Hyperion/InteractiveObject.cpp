@@ -81,6 +81,6 @@ void AInteractiveObject::SetInputLeftRightValue(float Value)
 void AInteractiveObject::SetInputDirection_Implementation(float LeftRightValue, float ForwardBackValue)
 {
 	InputDirection = FVector2D(LeftRightValue,ForwardBackValue);
-	GEngine->AddOnScreenDebugMessage(-1,5,FColor::Purple, InputDirection.ToString());
+	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Purple, InputDirection.ToString());
 }
 

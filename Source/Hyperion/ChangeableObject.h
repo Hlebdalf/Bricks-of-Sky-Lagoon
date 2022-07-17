@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InteractiveObject.h"
+#include "Camera/CameraComponent.h"
 #include "ChangeableObject.generated.h"
 
 /**
@@ -13,11 +14,14 @@ UCLASS()
 class HYPERION_API AChangeableObject : public AInteractiveObject
 {
 	GENERATED_BODY()
+	
 	UFUNCTION()
 	void UpdateValue();
-	/*UFUNCTION()
-	bool IsCanUpdate(FVector2D inputValue, FVector2D floor, FVector2D roof);*/
+public:
+	AChangeableObject();
 protected:
+	UPROPERTY(EditAnywhere)
+	UCameraComponent* ChangeableObjectCamera;
 	UPROPERTY(EditAnywhere, Category="ChangeableSettings")
 	FVector2D DirectionThresholdFloor = FVector2D(0, 0);
 	UPROPERTY(EditAnywhere,Category="ChangeableSettings")
