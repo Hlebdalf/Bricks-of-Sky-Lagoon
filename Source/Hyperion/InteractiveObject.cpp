@@ -7,7 +7,6 @@
 
 AInteractiveObject::AInteractiveObject()
 {
-	NetUpdateFrequency = 4;
 	PrimaryActorTick.bCanEverTick = true;
 	UInteractiveMesh = CreateDefaultSubobject<UStaticMeshComponent>("DefaultInteractiveMesh");
 	RootComponent = UInteractiveMesh;
