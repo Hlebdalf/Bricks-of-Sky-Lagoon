@@ -10,7 +10,8 @@
 
 
 AHyperionCharacter::AHyperionCharacter()
-{
+{   
+    //APlayerController::ClientTravel
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 	TurnRateGamepad = 45.f;
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
@@ -25,7 +26,6 @@ AHyperionCharacter::AHyperionCharacter()
 void AHyperionCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	FoV = 120;
 }
 
 void AHyperionCharacter::Tick(float DeltaSeconds)
