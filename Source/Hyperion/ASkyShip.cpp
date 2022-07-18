@@ -7,7 +7,7 @@ ASkyShip::ASkyShip()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	SkyShipCorpus = CreateDefaultSubobject<UStaticMeshComponent>("SkyShipCorpus");
-	
+
 	RootComponent = SkyShipCorpus;
 
 	ForwardArrow = CreateDefaultSubobject<UArrowComponent>("ForwardArrow");
@@ -24,15 +24,6 @@ ASkyShip::ASkyShip()
 	ForwardArrow->SetRelativeLocation(FVector(1500, 0, 0));
 	LeftArrow->SetRelativeLocation(FVector(0, 800, 0));
 	RightArrow->SetRelativeLocation(FVector(0, -800, 0));
-
-	
-	/*AWheel = CreateDefaultSubobject<UChildActorComponent>(TEXT("Wheel"));
-	AWheel->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);*/
-	
-	
-	/*AWheel ->SetChildActorClass([AChangeableObject]::StaticClass());
-	AWheel->ChildActorClass = 
-	AWheel->CreateChildActor();*/
 
 	const ConstructorHelpers::FObjectFinder<UStaticMesh> CorpusMesh(TEXT("/Game/Models/Ship_Mesh"));
 	if (CorpusMesh.Succeeded())
@@ -56,12 +47,11 @@ void ASkyShip::BeginPlay()
 void ASkyShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if(!HasAuthority())
+	if (!HasAuthority())
 	{
-		SetActorTransform(NowTransform);
+		//SetActorTransform(NowTransform);
+		InterToTransform();
 	}
-	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Yellow, NowTransform.ToString());
-	//SetActorTransform(NowTransform);
 	ASkyShip::UpdatePhysics();
 }
 
@@ -72,32 +62,27 @@ void ASkyShip::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ASkyShip::UpdatePhysics()
 {
-	if(HasAuthority())
+	if (HasAuthority())
 	{
 		float delta = GetWorld()->DeltaTimeSeconds;
-	
-		SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (TargetSkyLevel  - ForwardArrow->GetComponentLocation().Z)* delta),
-								ForwardArrow->GetRelativeLocation());
-		SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (TargetSkyLevel  - BackArrow->GetComponentLocation().Z)* delta),
-											   BackArrow->GetRelativeLocation());
-		SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (TargetSkyLevel - LeftArrow->GetComponentLocation().Z)* delta),
-											   LeftArrow->GetRelativeLocation());
-		SkyShipCorpus->AddForceAtLocationLocal(FVector(0, 0, UpForceMP * (TargetSkyLevel - RightArrow->GetComponentLocation().Z)* delta),
-											   RightArrow->GetRelativeLocation());
-		SkyShipCorpus->AddTorqueInRadians(FVector(0,0,SkyShipTorque* delta));
-		SkyShipCorpus->AddForce(GetActorForwardVector()*SkyShipSpeedMP);
-		//SetNowTransform(GetActorTransform());
+
+		SkyShipCorpus->AddForceAtLocationLocal(
+			FVector(0, 0, UpForceMP * (TargetSkyLevel - ForwardArrow->GetComponentLocation().Z) * delta),
+			ForwardArrow->GetRelativeLocation());
+		SkyShipCorpus->AddForceAtLocationLocal(
+			FVector(0, 0, UpForceMP * (TargetSkyLevel - BackArrow->GetComponentLocation().Z) * delta),
+			BackArrow->GetRelativeLocation());
+		SkyShipCorpus->AddForceAtLocationLocal(
+			FVector(0, 0, UpForceMP * (TargetSkyLevel - LeftArrow->GetComponentLocation().Z) * delta),
+			LeftArrow->GetRelativeLocation());
+		SkyShipCorpus->AddForceAtLocationLocal(
+			FVector(0, 0, UpForceMP * (TargetSkyLevel - RightArrow->GetComponentLocation().Z) * delta),
+			RightArrow->GetRelativeLocation());
+		SkyShipCorpus->AddTorqueInRadians(FVector(0, 0, SkyShipTorque * delta));
+		SkyShipCorpus->AddForce(GetActorForwardVector() * SkyShipSpeedMP);
 		NowTransform = GetActorTransform();
 	}
 }
-
-/*void ASkyShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ASkyShip, SkyShipTorque);
-	DOREPLIFETIME(ASkyShip, SkyShipSpeedMP);
-	DOREPLIFETIME(ASkyShip, TargetSkyLevel);
-}*/
 
 void ASkyShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -108,8 +93,8 @@ void ASkyShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 void ASkyShip::SetSkyShipTorque_Implementation(float Value)
 {
 	SkyShipTorque = Value;
-
 }
+
 void ASkyShip::SetSkyShipSpeedMP_Implementation(float Value)
 {
 	SkyShipSpeedMP = Value;
@@ -125,7 +110,10 @@ void ASkyShip::EnablePhysicsOnServer_Implementation()
 	SkyShipCorpus->SetSimulatePhysics(true);
 }
 
-/*void ASkyShip::SetNowTransform_Implementation(FTransform transform)
-{
-	SetActorTransform(transform);
-}*/
+void ASkyShip::InterToTransform()
+{	
+	FQuat lol = FMath::QInterpTo(GetActorRotation().Quaternion(), NowTransform.GetRotation(), GetWorld()->DeltaTimeSeconds,30);
+	FVector kek = FMath::VInterpTo(GetActorLocation(), NowTransform.GetLocation(), GetWorld()->DeltaTimeSeconds, 30);
+	FTransform cheburek = FTransform(lol, kek, FVector(1,1,1));
+	SetActorTransform(cheburek);
+}
