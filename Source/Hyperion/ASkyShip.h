@@ -25,12 +25,26 @@ class HYPERION_API ASkyShip : public APawn
 	UPROPERTY(EditDefaultsOnly)
 	UArrowComponent* RightArrow;
 
-	UPROPERTY(Replicated)
+	/*UPROPERTY(Replicated)
 	float SkyShipTorque = 0;
 	UPROPERTY(Replicated)
 	float SkyShipSpeedMP = 1;
 	UPROPERTY(Replicated)
+	float TargetSkyLevel = 0;*/
+
+	UPROPERTY()
+	float SkyShipTorque = 0;
+	UPROPERTY()
+	float SkyShipSpeedMP = 1;
+	UPROPERTY()
 	float TargetSkyLevel = 0;
+	UPROPERTY(Replicated)
+	FTransform NowTransform;
+	
+	UFUNCTION(Server, Reliable)
+	void EnablePhysicsOnServer();
+	/*UFUNCTION(Client, Unreliable)
+	void SetNowTransform(FTransform transform);*/
 	
 	
 public:

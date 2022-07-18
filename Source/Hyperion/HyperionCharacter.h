@@ -27,7 +27,7 @@ class AHyperionCharacter : public ACharacter
 	AChangeableObject* ChangeableObject;
 	
 	UPROPERTY()
-	float FoV;
+	float FoV = 100;
 	UPROPERTY()
 	bool bIsControlling = false;
 	UPROPERTY(Replicated)
