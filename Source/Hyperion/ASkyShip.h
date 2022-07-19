@@ -11,11 +11,9 @@ UCLASS()
 class HYPERION_API ASkyShip : public APawn
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY(EditInstanceOnly)
 	UStaticMeshComponent* SkyShipCorpus;
-	/*UPROPERTY(EditInstanceOnly)
-	UChildActorComponent* AWheel;*/
 	UPROPERTY(EditDefaultsOnly)
 	UArrowComponent* ForwardArrow;
 	UPROPERTY(EditDefaultsOnly)
@@ -24,15 +22,23 @@ class HYPERION_API ASkyShip : public APawn
 	UArrowComponent* LeftArrow;
 	UPROPERTY(EditDefaultsOnly)
 	UArrowComponent* RightArrow;
-
-	UPROPERTY(Replicated)
+	
+	UPROPERTY()
 	float SkyShipTorque = 0;
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float SkyShipSpeedMP = 1;
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float TargetSkyLevel = 0;
-	
-	
+	UPROPERTY(Replicated)
+	FTransform NowTransform;
+
+	UFUNCTION(Server, Reliable)
+	void EnablePhysicsOnServer();
+	UFUNCTION()
+	void UpdatePhysics();
+	UFUNCTION()
+	void InterToTransform();
+
 public:
 	ASkyShip();
 	UFUNCTION(Server, Unreliable)
@@ -41,7 +47,7 @@ public:
 	void SetSkyShipSpeedMP(float Value);
 	UFUNCTION(Server, Unreliable)
 	void SetTagetSkyLevel(float Value);
-	
+
 
 protected:
 	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
@@ -52,18 +58,16 @@ protected:
 	float UpForceMP = 1;
 	UPROPERTY(EditInstanceOnly, Category="MovementSettings")
 	float StartSkyLevel = 0;
-	
+
 	virtual void BeginPlay() override;
-	
-	void UpdatePhysics();
 	
 	
 
-public:	
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };

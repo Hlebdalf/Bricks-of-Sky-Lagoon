@@ -27,7 +27,7 @@ class AHyperionCharacter : public ACharacter
 	AChangeableObject* ChangeableObject;
 	
 	UPROPERTY()
-	float FoV;
+	float FoV = 100;
 	UPROPERTY()
 	bool bIsControlling = false;
 	UPROPERTY(Replicated)
@@ -43,6 +43,10 @@ class AHyperionCharacter : public ACharacter
 	void StopMovement();
 	UFUNCTION(NetMulticast, Reliable)
 	void ReturnMovement();
+	UFUNCTION()
+	void Run();
+	UFUNCTION()
+	void StopRuning();
 
 public:
 	AHyperionCharacter();
@@ -57,10 +61,7 @@ public:
 	float TurnRateGamepad;
 
 protected:
-	
 	void MoveForward(float Val);
-	void Run();
-	void StopRuning();
 	void MoveRight(float Val);
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);	
