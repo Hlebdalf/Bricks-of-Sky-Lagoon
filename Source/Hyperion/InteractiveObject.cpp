@@ -70,11 +70,13 @@ void AInteractiveObject::SetIsControlling_Implementation(bool how)
 void AInteractiveObject::SetInputForwardBackValue(float Value)
 {
 	SetInputDirection(InputDirection.X, Value);
+	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Cyan, FString::SanitizeFloat(Value));
 }
 
 void AInteractiveObject::SetInputLeftRightValue(float Value)
 {
 	SetInputDirection(Value,InputDirection.Y);
+	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Yellow, FString::SanitizeFloat(Value));
 }
 
 void AInteractiveObject::SetInputDirection_Implementation(float LeftRightValue, float ForwardBackValue)
