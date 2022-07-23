@@ -119,8 +119,9 @@ void AHyperionCharacter::InteractServer_Implementation()
 			ChangeableObject->SetIsControlling(true);
 			ChangeableObject->SetHyperionCharacter(this);
 			StopMovement();
-			GetController()->AController::Possess(ChangeableObject);
 			ReturnMovement();
+			GetController()->AController::Possess(ChangeableObject);
+			
 		}
 	}
 }

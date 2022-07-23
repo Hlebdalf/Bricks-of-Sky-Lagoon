@@ -25,5 +25,6 @@ void AChangeableObject::UpdateValue()
 		&& Value.Y + inputVector.Y < DirectionThresholdRoof.Y)
 	{
 		Value += inputVector;
+		//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Black, Value.ToString());
 	}
 }

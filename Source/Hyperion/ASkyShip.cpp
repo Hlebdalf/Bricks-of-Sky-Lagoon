@@ -25,7 +25,7 @@ ASkyShip::ASkyShip()
 	LeftArrow->SetRelativeLocation(FVector(0, 800, 0));
 	RightArrow->SetRelativeLocation(FVector(0, -800, 0));
 
-	const ConstructorHelpers::FObjectFinder<UStaticMesh> CorpusMesh(TEXT("/Game/Models/Ship_Mesh"));
+	/*const ConstructorHelpers::FObjectFinder<UStaticMesh> CorpusMesh(TEXT("/Game/Models/Ship_Mesh"));
 	if (CorpusMesh.Succeeded())
 	{
 		SkyShipCorpus->SetStaticMesh(CorpusMesh.Object);
@@ -35,7 +35,10 @@ ASkyShip::ASkyShip()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CORPUS MESH NOT FOUND!"));
-	}
+	}*/
+	
+	SkyShipCorpus->SetAngularDamping(AngDamping);
+	SkyShipCorpus->SetLinearDamping(LinDamping);
 }
 
 void ASkyShip::BeginPlay()
@@ -93,6 +96,7 @@ void ASkyShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 void ASkyShip::SetSkyShipTorque_Implementation(float Value)
 {
 	SkyShipTorque = Value;
+	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, FString::SanitizeFloat(Value));
 }
 
 void ASkyShip::SetSkyShipSpeedMP_Implementation(float Value)
