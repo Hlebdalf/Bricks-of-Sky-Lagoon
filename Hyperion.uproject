@@ -26,12 +26,24 @@
 			"Enabled": true
 		},
 		{
-			"Name": "FieldSystemPlugin",
-			"Enabled": true
+			"Name": "ChaosClothEditor",
+			"Enabled": false
 		},
 		{
-			"Name": "DatasmithFBXImporter",
-			"Enabled": true
+			"Name": "ChaosCloth",
+			"Enabled": false
+		},
+		{
+			"Name": "ChaosNiagara",
+			"Enabled": false
+		},
+		{
+			"Name": "ChaosEditor",
+			"Enabled": false
+		},
+		{
+			"Name": "DatasmithContent",
+			"Enabled": false
 		}
 	]
 }

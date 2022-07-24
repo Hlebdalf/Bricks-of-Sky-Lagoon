@@ -96,7 +96,6 @@ void ASkyShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 void ASkyShip::SetSkyShipTorque_Implementation(float Value)
 {
 	SkyShipTorque = Value;
-	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, FString::SanitizeFloat(Value));
 }
 
 void ASkyShip::SetSkyShipSpeedMP_Implementation(float Value)
@@ -107,6 +106,7 @@ void ASkyShip::SetSkyShipSpeedMP_Implementation(float Value)
 void ASkyShip::SetTagetSkyLevel_Implementation(float Value)
 {
 	TargetSkyLevel = StartSkyLevel + Value;
+	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, FString::SanitizeFloat(TargetSkyLevel));
 }
 
 void ASkyShip::EnablePhysicsOnServer_Implementation()
@@ -116,8 +116,8 @@ void ASkyShip::EnablePhysicsOnServer_Implementation()
 
 void ASkyShip::InterToTransform()
 {	
-	FQuat lol = FMath::QInterpTo(GetActorRotation().Quaternion(), NowTransform.GetRotation(), GetWorld()->DeltaTimeSeconds,30);
-	FVector kek = FMath::VInterpTo(GetActorLocation(), NowTransform.GetLocation(), GetWorld()->DeltaTimeSeconds, 30);
+	FQuat lol = FMath::QInterpTo(GetActorRotation().Quaternion(), NowTransform.GetRotation(), GetWorld()->DeltaTimeSeconds,1);
+	FVector kek = FMath::VInterpTo(GetActorLocation(), NowTransform.GetLocation(), GetWorld()->DeltaTimeSeconds, 1);
 	FTransform cheburek = FTransform(lol, kek, FVector(1,1,1));
 	SetActorTransform(cheburek);
 }
