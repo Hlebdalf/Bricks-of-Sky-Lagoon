@@ -61,31 +61,25 @@ void AHyperionCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 
 void AHyperionCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (bIsControlling)
 	{
-		if (bIsControlling)
-		{
-			SetControlledYInput(Value);
-		}
-		else
-		{
-			AddMovementInput(GetActorForwardVector(), Value);
-		}
+		SetControlledYInput(Value);
+	}
+	else
+	{
+		AddMovementInput(GetActorForwardVector(), Value);
 	}
 }
 
 void AHyperionCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (bIsControlling)
 	{
-		if (bIsControlling)
-		{
-			SetControlledXInput(Value);
-		}
-		else
-		{
-			AddMovementInput(GetActorRightVector(), Value);
-		}
+		SetControlledXInput(Value);
+	}
+	else
+	{
+		AddMovementInput(GetActorRightVector(), Value);
 	}
 }
 
