@@ -44,8 +44,8 @@ void AHyperionCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AHyperionCharacter::Run);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AHyperionCharacter::StopRuning);
 
-	CharacterCollision->OnComponentBeginOverlap.AddDynamic(this, &AHyperionCharacter::OnOverlapBegin);
-	CharacterCollision->OnComponentEndOverlap.AddDynamic(this, &AHyperionCharacter::OnOverlapEnd);
+	/*CharacterCollision->OnComponentBeginOverlap.AddDynamic(this, &AHyperionCharacter::OnOverlapBegin);
+	CharacterCollision->OnComponentEndOverlap.AddDynamic(this, &AHyperionCharacter::OnOverlapEnd);*/
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AHyperionCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AHyperionCharacter::MoveRight);
@@ -147,7 +147,7 @@ void AHyperionCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 }
 
 
-void AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+/*void AHyperionCharacter::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
                                         class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                         const FHitResult& SweepResult)
 {
@@ -174,7 +174,7 @@ void AHyperionCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActo
 			SetIsCanControl(false);
 		}
 	}
-}
+}*/
 
 void AHyperionCharacter::SetIsCanControl_Implementation(bool val)
 {
