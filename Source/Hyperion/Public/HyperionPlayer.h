@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ChangeableObject.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -20,13 +21,33 @@ class HYPERION_API AHyperionPlayer : public APawn
 	UCameraComponent* UHyperionPlayerCamera;
 	
 	UPROPERTY(VisibleAnywhere, Category="PlayerMovement")
-	float ForceMP = 10000000 * 1.6f;
+	float ForceMP = 10000000 * 1.1f;
 	UPROPERTY()
 	float XInput = 1.f;
 	UPROPERTY()
 	float YInput = 1.f;
 	UPROPERTY()
 	bool bIsFalling = true;
+
+	UPROPERTY(Replicated)
+	bool bIsCanControl = false;
+	UPROPERTY(Replicated)
+	bool bIsControlling = false;
+	UPROPERTY(Replicated)
+	AChangeableObject* ChangeableObject;
+	
+	UFUNCTION(Server, Reliable)
+	void InteractServer();
+	UFUNCTION(Server, Reliable)
+	void SetIsCanControl(bool val);
+	UFUNCTION(Server, Unreliable)
+	void SetControlledXInput(float X);
+	UFUNCTION(Server, Unreliable)
+	void SetControlledYInput(float Y);
+	UFUNCTION(Server, Reliable)
+	void SetIsControlling(bool val);
+	UFUNCTION(Server, Reliable)
+	void SetChangeableObject(AChangeableObject* object);
 
 	void Run();
 	void StopRuning();
@@ -47,13 +68,25 @@ protected:
 	void MoveForward(float Val);
 	void MoveRight(float Val);
 	void Jump();
+	void Interact();
 	UFUNCTION()
 	void OnHit(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
 						class UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 						const FHitResult& Hit);
+
+	UFUNCTION()
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+						class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+						const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	/*UFUNCTION()
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
 					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);*/
 
 };
+
+

@@ -3,6 +3,8 @@
 
 #include "HyperionPlayer.h"
 
+#include "Net/UnrealNetwork.h"
+
 AHyperionPlayer::AHyperionPlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -54,42 +56,61 @@ void AHyperionPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AHyperionPlayer::Run);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AHyperionPlayer::StopRuning);
 
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AHyperionPlayer::Interact);
+
+	UHyperionPlayerCollision->OnComponentBeginOverlap.AddDynamic(this, &AHyperionPlayer::OnOverlapBegin);
+	UHyperionPlayerCollision->OnComponentEndOverlap.AddDynamic(this, &AHyperionPlayer::OnOverlapEnd);
+
 	UHyperionPlayerCollision->OnComponentHit.AddDynamic(this, &AHyperionPlayer::OnHit);
 }
 
 
 void AHyperionPlayer::MoveForward(float Val)
 {
-	YInput = FMath::Abs(Val);
+	//YInput = FMath::Abs(Val);
 
-	if (Val != 0)
+	if (bIsControlling)
 	{
-		const FVector PlayerForwardVector = FVector::VectorPlaneProject(UHyperionPlayerCamera->GetForwardVector(),FVector(0, 0, 1))/ (XInput + YInput);
-		if (!bIsFalling)
+		SetControlledYInput(Val);
+	}
+	else
+	{
+		if (true)
 		{
-			UHyperionPlayerCollision->AddForce( PlayerForwardVector * ForceMP * Val * GetWorld()->DeltaTimeSeconds);
-		}
-		else
-		{
-			UHyperionPlayerCollision->AddForce( PlayerForwardVector * ForceMP * Val / 4 * GetWorld()->DeltaTimeSeconds);
+			const FVector PlayerForwardVector = FVector::VectorPlaneProject(UHyperionPlayerCamera->GetForwardVector(),FVector(0, 0, 1))/ (XInput + YInput);
+			if (!bIsFalling)
+			{
+				UHyperionPlayerCollision->AddForce( PlayerForwardVector * ForceMP * Val * GetWorld()->DeltaTimeSeconds);
+			}
+			else
+			{
+				UHyperionPlayerCollision->AddForce( PlayerForwardVector * ForceMP * Val / 4 * GetWorld()->DeltaTimeSeconds);
+			}
 		}
 	}
 }
 
 void AHyperionPlayer::MoveRight(float Val)
 {
-	XInput = FMath::Abs(Val);
+	//XInput = FMath::Abs(Val);
 
-	if (Val != 0)
+	if (bIsControlling)
 	{
-		const FVector PlayerRightVector = FVector::VectorPlaneProject(UHyperionPlayerCamera->GetRightVector(),FVector(0, 0, 1))/ (XInput + YInput);
-		if (!bIsFalling)
+		SetControlledXInput(Val);
+	}
+	else
+	{
+		if (true)
 		{
-			UHyperionPlayerCollision->AddForce(PlayerRightVector * ForceMP * Val * GetWorld()->DeltaTimeSeconds);
-		}
-		else
-		{
-			UHyperionPlayerCollision->AddForce(PlayerRightVector * ForceMP * Val / 4* GetWorld()->DeltaTimeSeconds);
+			const FVector PlayerRightVector = FVector::VectorPlaneProject(UHyperionPlayerCamera->GetRightVector(),FVector(0, 0, 1))/ (XInput + YInput);
+			if (!bIsFalling)
+			{
+				UHyperionPlayerCollision->AddForce( PlayerRightVector * ForceMP * Val * GetWorld()->DeltaTimeSeconds);
+			}
+			else
+			{
+				UHyperionPlayerCollision->AddForce( PlayerRightVector * ForceMP * Val / 4 * GetWorld()->DeltaTimeSeconds);
+			}
 		}
 	}
 }
@@ -117,4 +138,93 @@ void AHyperionPlayer::Run()
 void AHyperionPlayer::StopRuning()
 {
 	ForceMP /= 1.5f;
+}
+
+void AHyperionPlayer::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+										class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+										const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherComp)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, "YouCanControl on F ");
+		ChangeableObject = Cast<AChangeableObject>(OtherActor);
+		if (ChangeableObject != nullptr)
+		{
+			SetChangeableObject(ChangeableObject);
+			SetIsCanControl(true);
+		}
+	}
+}
+
+void AHyperionPlayer::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+									  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherComp)
+	{
+		ChangeableObject = Cast<AChangeableObject>(OtherActor);
+		if (ChangeableObject != nullptr)
+		{
+			SetIsCanControl(false);
+		}
+	}
+}
+
+void AHyperionPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AHyperionPlayer, bIsCanControl);
+	DOREPLIFETIME(AHyperionPlayer, ChangeableObject);
+	DOREPLIFETIME(AHyperionPlayer, bIsControlling);
+}
+
+void AHyperionPlayer::SetIsCanControl_Implementation(bool val)
+{
+	bIsCanControl = val;
+}
+
+void AHyperionPlayer::SetChangeableObject_Implementation(AChangeableObject* object)
+{
+	ChangeableObject = object;
+}
+
+void AHyperionPlayer::SetIsControlling_Implementation(bool val)
+{
+	bIsControlling = val;
+}
+
+void AHyperionPlayer::SetControlledXInput_Implementation(float X)
+{
+	ChangeableObject->SetInputRightValue(X);
+}
+
+void AHyperionPlayer::SetControlledYInput_Implementation(float Y)
+{
+	ChangeableObject->SetInputForwardValue(Y);
+}
+
+void AHyperionPlayer::Interact()
+{
+	InteractServer();
+}
+
+void AHyperionPlayer::InteractServer_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, "PRESSED F");
+	if (bIsCanControl && ChangeableObject != nullptr && !bIsControlling)
+	{
+		if (!ChangeableObject->GetIsControlling())
+		{
+			ChangeableObject->SetIsControlling(true);
+			//ChangeableObject->SetHyperionCharacter(this);
+			SetIsControlling(true);
+			bIsControlling = true;
+		}
+	}
+	else if (ChangeableObject != nullptr && bIsControlling)
+	{
+		SetIsControlling(false);
+		ChangeableObject->SetIsControlling(false);
+		SetControlledXInput_Implementation(0);
+		SetControlledYInput_Implementation(0);
+	}
 }
