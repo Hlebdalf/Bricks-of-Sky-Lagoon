@@ -17,13 +17,13 @@ AHyperionPlayer::AHyperionPlayer()
 	UHyperionPlayerCamera->bUsePawnControlRotation = true;
 	UHyperionPlayerCamera->FieldOfView = 110;
 
+	this->NetUpdateFrequency = 60;
+	this->MinNetUpdateFrequency = 30;
+
 	bUseControllerRotationYaw = true;
 	RootComponent = UHyperionPlayerCollision;
 	UHyperionPlayerCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	if (HasAuthority())
-	{
-		UHyperionPlayerCollision->SetSimulatePhysics(true);
-	}
+	UHyperionPlayerCollision->SetSimulatePhysics(true);
 	UHyperionPlayerCollision->SetCollisionProfileName("Pawn");
 	UHyperionPlayerCollision->BodyInstance.bLockXRotation = true;
 	UHyperionPlayerCollision->BodyInstance.bLockYRotation = true;
@@ -80,8 +80,8 @@ void AHyperionPlayer::MoveForward(float Val)
 	{
 		if (true)
 		{
-			const FVector PlayerForwardVector = FVector::VectorPlaneProject(
-				UHyperionPlayerCamera->GetForwardVector(), FVector(0, 0, 1)) / (XInput + YInput);
+			PlayerForwardVector = FVector::VectorPlaneProject(
+				UHyperionPlayerCamera->GetForwardVector(), FVector(0, 0, 1));// XInput + YInput;
 			if (!bIsFalling)
 			{
 				UHyperionPlayerCollision->AddForce(
@@ -108,9 +108,8 @@ void AHyperionPlayer::MoveRight(float Val)
 	{
 		if (true)
 		{
-			const FVector PlayerRightVector = FVector::VectorPlaneProject(
-				UHyperionPlayerCamera->GetRightVector(), FVector(0, 0, 1)) / (XInput + YInput);
-
+			PlayerRightVector = FVector::VectorPlaneProject(
+				UHyperionPlayerCamera->GetRightVector(), FVector(0, 0, 1));// (XInput + YInput);
 			if (!bIsFalling)
 			{
 				UHyperionPlayerCollision->AddForce(PlayerRightVector * ForceMP * Val * GetWorld()->DeltaTimeSeconds);
@@ -141,12 +140,12 @@ void AHyperionPlayer::OnHit(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 
 void AHyperionPlayer::Run()
 {
-	ForceMP *= 1.5f;
+	ForceMP *= 1.3f;
 }
 
 void AHyperionPlayer::StopRuning()
 {
-	ForceMP /= 1.5f;
+	ForceMP /= 1.3f;
 }
 
 void AHyperionPlayer::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
