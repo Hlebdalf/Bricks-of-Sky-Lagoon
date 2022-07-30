@@ -20,7 +20,10 @@ AHyperionPlayer::AHyperionPlayer()
 	bUseControllerRotationYaw = true;
 	RootComponent = UHyperionPlayerCollision;
 	UHyperionPlayerCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	UHyperionPlayerCollision->SetSimulatePhysics(true);
+	if (HasAuthority())
+	{
+		UHyperionPlayerCollision->SetSimulatePhysics(true);
+	}
 	UHyperionPlayerCollision->SetCollisionProfileName("Pawn");
 	UHyperionPlayerCollision->BodyInstance.bLockXRotation = true;
 	UHyperionPlayerCollision->BodyInstance.bLockYRotation = true;
@@ -77,14 +80,17 @@ void AHyperionPlayer::MoveForward(float Val)
 	{
 		if (true)
 		{
-			const FVector PlayerForwardVector = FVector::VectorPlaneProject(UHyperionPlayerCamera->GetForwardVector(),FVector(0, 0, 1))/ (XInput + YInput);
+			const FVector PlayerForwardVector = FVector::VectorPlaneProject(
+				UHyperionPlayerCamera->GetForwardVector(), FVector(0, 0, 1)) / (XInput + YInput);
 			if (!bIsFalling)
 			{
-				UHyperionPlayerCollision->AddForce( PlayerForwardVector * ForceMP * Val * GetWorld()->DeltaTimeSeconds);
+				UHyperionPlayerCollision->AddForce(
+					PlayerForwardVector * ForceMP * Val * GetWorld()->DeltaTimeSeconds);
 			}
 			else
 			{
-				UHyperionPlayerCollision->AddForce( PlayerForwardVector * ForceMP * Val / 4 * GetWorld()->DeltaTimeSeconds);
+				UHyperionPlayerCollision->AddForce(
+					PlayerForwardVector * ForceMP * Val / 4 * GetWorld()->DeltaTimeSeconds);
 			}
 		}
 	}
@@ -102,14 +108,17 @@ void AHyperionPlayer::MoveRight(float Val)
 	{
 		if (true)
 		{
-			const FVector PlayerRightVector = FVector::VectorPlaneProject(UHyperionPlayerCamera->GetRightVector(),FVector(0, 0, 1))/ (XInput + YInput);
+			const FVector PlayerRightVector = FVector::VectorPlaneProject(
+				UHyperionPlayerCamera->GetRightVector(), FVector(0, 0, 1)) / (XInput + YInput);
+
 			if (!bIsFalling)
 			{
-				UHyperionPlayerCollision->AddForce( PlayerRightVector * ForceMP * Val * GetWorld()->DeltaTimeSeconds);
+				UHyperionPlayerCollision->AddForce(PlayerRightVector * ForceMP * Val * GetWorld()->DeltaTimeSeconds);
 			}
 			else
 			{
-				UHyperionPlayerCollision->AddForce( PlayerRightVector * ForceMP * Val / 4 * GetWorld()->DeltaTimeSeconds);
+				UHyperionPlayerCollision->
+					AddForce(PlayerRightVector * ForceMP * Val / 4 * GetWorld()->DeltaTimeSeconds);
 			}
 		}
 	}
@@ -119,7 +128,7 @@ void AHyperionPlayer::Jump()
 {
 	if (!bIsFalling)
 	{
-		bIsFalling = true;
+		SetIsFalling(true);
 		UHyperionPlayerCollision->AddImpulse(FVector(0, 0, 100000));
 	}
 }
@@ -127,7 +136,7 @@ void AHyperionPlayer::Jump()
 void AHyperionPlayer::OnHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                             FVector NormalImpulse, const FHitResult& Hit)
 {
-	bIsFalling = false;
+	SetIsFalling(false);
 }
 
 void AHyperionPlayer::Run()
@@ -141,8 +150,8 @@ void AHyperionPlayer::StopRuning()
 }
 
 void AHyperionPlayer::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-										class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-										const FHitResult& SweepResult)
+                                     class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                     const FHitResult& SweepResult)
 {
 	if (OtherActor && OtherComp)
 	{
@@ -157,7 +166,7 @@ void AHyperionPlayer::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 }
 
 void AHyperionPlayer::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-									  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor && OtherComp)
 	{
@@ -175,6 +184,7 @@ void AHyperionPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AHyperionPlayer, bIsCanControl);
 	DOREPLIFETIME(AHyperionPlayer, ChangeableObject);
 	DOREPLIFETIME(AHyperionPlayer, bIsControlling);
+	DOREPLIFETIME(AHyperionPlayer, bIsFalling);
 }
 
 void AHyperionPlayer::SetIsCanControl_Implementation(bool val)
@@ -227,4 +237,9 @@ void AHyperionPlayer::InteractServer_Implementation()
 		SetControlledXInput_Implementation(0);
 		SetControlledYInput_Implementation(0);
 	}
+}
+
+void AHyperionPlayer::SetIsFalling_Implementation(bool how)
+{
+	bIsFalling = how;
 }

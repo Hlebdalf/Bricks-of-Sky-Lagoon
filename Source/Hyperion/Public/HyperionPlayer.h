@@ -21,14 +21,14 @@ class HYPERION_API AHyperionPlayer : public APawn
 	UCameraComponent* UHyperionPlayerCamera;
 	
 	UPROPERTY(VisibleAnywhere, Category="PlayerMovement")
-	float ForceMP = 10000000 * 1.1f;
+	float ForceMP = 10000000 * 1.5f;
 	UPROPERTY()
 	float XInput = 1.f;
 	UPROPERTY()
 	float YInput = 1.f;
-	UPROPERTY()
+	
+	UPROPERTY(Replicated)
 	bool bIsFalling = true;
-
 	UPROPERTY(Replicated)
 	bool bIsCanControl = false;
 	UPROPERTY(Replicated)
@@ -44,7 +44,9 @@ class HYPERION_API AHyperionPlayer : public APawn
 	void SetControlledXInput(float X);
 	UFUNCTION(Server, Unreliable)
 	void SetControlledYInput(float Y);
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Unreliable)
+	void SetIsFalling(bool how);
+	UFUNCTION(Server, Unreliable)
 	void SetIsControlling(bool val);
 	UFUNCTION(Server, Reliable)
 	void SetChangeableObject(AChangeableObject* object);
