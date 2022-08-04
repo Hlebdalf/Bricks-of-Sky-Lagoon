@@ -20,7 +20,7 @@ class HYPERION_API AHyperionPlayer : public APawn
 	UPROPERTY()
 	UCameraComponent* UHyperionPlayerCamera;
 	
-	UPROPERTY(VisibleAnywhere, Category="PlayerMovement")
+	UPROPERTY(Replicated, VisibleAnywhere, Category="PlayerMovement")
 	float ForceMP = 10000000.f * 1.3f;
 	UPROPERTY(Replicated)
 	float XInput = 0.f;
@@ -49,6 +49,10 @@ class HYPERION_API AHyperionPlayer : public APawn
 	UFUNCTION(Server, Reliable)
 	void InteractServer();
 	UFUNCTION(Server, Reliable)
+	void JumpServer();
+	UFUNCTION(Server, Reliable)
+	void SetForceMP(bool isRunning);
+	UFUNCTION(Server, Reliable)
 	void SetIsCanControl(bool val);
 	UFUNCTION(Server, Unreliable)
 	void SetControlledXInput(float X);
@@ -72,7 +76,7 @@ class HYPERION_API AHyperionPlayer : public APawn
 		
 
 	void Run();
-	void StopRuning();
+	void StopRunning();
 
 public:
 	AHyperionPlayer();
