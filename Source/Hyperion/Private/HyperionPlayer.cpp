@@ -50,10 +50,8 @@ void AHyperionPlayer::Tick(float DeltaTime)
 	}
 	else
 	{
-		PlayerForwardVector = FVector::VectorPlaneProject(
-			UHyperionPlayerCamera->GetForwardVector(), FVector(0, 0, 1)) * ForceMP * DeltaTime * YInput;
-		PlayerRightVector = FVector::VectorPlaneProject(
-			UHyperionPlayerCamera->GetRightVector(), FVector(0, 0, 1)) * ForceMP * DeltaTime * XInput;
+		PlayerForwardVector =  ForwardViewportVector * ForceMP * DeltaTime * YInput;
+		PlayerRightVector = RightViewportVector * ForceMP * DeltaTime * XInput;
 		if (!bIsFalling)
 		{
 			UHyperionPlayerCollision->AddForce(PlayerForwardVector + PlayerRightVector);
@@ -101,7 +99,11 @@ void AHyperionPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void AHyperionPlayer::MoveForward(float Val)
 {
 	SetYInput(Val);
-
+	if(!HasAuthority())
+	{
+		SetForwardViewportVector(FVector::VectorPlaneProject(
+			UHyperionPlayerCamera->GetForwardVector(), FVector(0, 0, 1)));
+	}
 	/*if (bIsControlling)
 	{
 		SetControlledYInput(Val);
@@ -129,6 +131,11 @@ void AHyperionPlayer::MoveForward(float Val)
 void AHyperionPlayer::MoveRight(float Val)
 {
 	SetXInput(Val);
+	if(!HasAuthority())
+	{
+		SetRightViewportVector(FVector::VectorPlaneProject(
+			UHyperionPlayerCamera->GetRightVector(), FVector(0, 0, 1)));
+	}
 
 	/*if (bIsControlling)
 	{
@@ -257,7 +264,6 @@ void AHyperionPlayer::InteractServer_Implementation()
 		if (!ChangeableObject->GetIsControlling())
 		{
 			ChangeableObject->SetIsControlling(true);
-			//ChangeableObject->SetHyperionCharacter(this);
 			SetIsControlling(true);
 			bIsControlling = true;
 		}
@@ -284,4 +290,15 @@ void AHyperionPlayer::SetXInput_Implementation(float X)
 void AHyperionPlayer::SetYInput_Implementation(float Y)
 {
 	YInput = Y;
+}
+
+
+void AHyperionPlayer::SetForwardViewportVector_Implementation(FVector dir)
+{
+	ForwardViewportVector = dir;
+}
+
+void AHyperionPlayer::SetRightViewportVector_Implementation(FVector dir)
+{
+	RightViewportVector = dir;
 }

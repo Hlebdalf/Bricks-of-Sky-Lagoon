@@ -30,6 +30,10 @@ class HYPERION_API AHyperionPlayer : public APawn
 	FVector PlayerRightVector;
 	UPROPERTY()
 	FVector PlayerForwardVector;
+	UPROPERTY()
+	FVector ForwardViewportVector;
+	UPROPERTY()
+	FVector RightViewportVector;
 
 	UPROPERTY(Replicated)
 	FVector HyperionPlayerLocation;
@@ -56,17 +60,21 @@ class HYPERION_API AHyperionPlayer : public APawn
 	void SetIsControlling(bool val);
 	UFUNCTION(Server, Reliable)
 	void SetChangeableObject(AChangeableObject* object);
+	
 	UFUNCTION(Server, Unreliable)
 	void SetXInput(float X);
 	UFUNCTION(Server, Unreliable)
 	void SetYInput(float Y);
+	UFUNCTION(Server, Unreliable)
+	void SetRightViewportVector(FVector dir);
+	UFUNCTION(Server, Unreliable)
+	void SetForwardViewportVector(FVector dir);
 		
 
 	void Run();
 	void StopRuning();
 
 public:
-
 	AHyperionPlayer();
 
 protected:
