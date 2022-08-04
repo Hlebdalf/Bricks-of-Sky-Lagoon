@@ -36,12 +36,42 @@ AHyperionPlayer::AHyperionPlayer()
 void AHyperionPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+	HyperionPlayerLocation = GetActorLocation();
 }
 
 // Called every frame
 void AHyperionPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bIsControlling)
+	{
+		SetControlledYInput(YInput);
+		SetControlledYInput(XInput);
+	}
+	else
+	{
+		PlayerForwardVector = FVector::VectorPlaneProject(
+			UHyperionPlayerCamera->GetForwardVector(), FVector(0, 0, 1)) * ForceMP * DeltaTime * YInput;
+		PlayerRightVector = FVector::VectorPlaneProject(
+			UHyperionPlayerCamera->GetRightVector(), FVector(0, 0, 1)) * ForceMP * DeltaTime * XInput;
+		if (!bIsFalling)
+		{
+			UHyperionPlayerCollision->AddForce(PlayerForwardVector + PlayerRightVector);
+		}
+		else
+		{
+			UHyperionPlayerCollision->AddForce((PlayerForwardVector + PlayerRightVector) / 4);
+		}
+		if (HasAuthority())
+		{
+			HyperionPlayerLocation = GetActorLocation();
+			//GEngine->AddOnScreenDebugMessage(-1,5, FColor::Cyan, HyperionPlayerLocation.ToString());
+		}
+	}
+	if (!HasAuthority())
+	{
+		SetActorLocation(FMath::VInterpTo(GetActorLocation(), HyperionPlayerLocation, DeltaTime, 1 / DeltaTime));
+	}
 }
 
 // Called to bind functionality to input
@@ -70,9 +100,9 @@ void AHyperionPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AHyperionPlayer::MoveForward(float Val)
 {
-	//YInput = FMath::Abs(Val);
+	SetYInput(Val);
 
-	if (bIsControlling)
+	/*if (bIsControlling)
 	{
 		SetControlledYInput(Val);
 	}
@@ -93,14 +123,14 @@ void AHyperionPlayer::MoveForward(float Val)
 					PlayerForwardVector * ForceMP * Val / 4 * GetWorld()->DeltaTimeSeconds);
 			}
 		}
-	}
+	}*/
 }
 
 void AHyperionPlayer::MoveRight(float Val)
 {
-	//XInput = FMath::Abs(Val);
+	SetXInput(Val);
 
-	if (bIsControlling)
+	/*if (bIsControlling)
 	{
 		SetControlledXInput(Val);
 	}
@@ -120,7 +150,7 @@ void AHyperionPlayer::MoveRight(float Val)
 					AddForce(PlayerRightVector * ForceMP * Val / 4 * GetWorld()->DeltaTimeSeconds);
 			}
 		}
-	}
+	}*/
 }
 
 void AHyperionPlayer::Jump()
@@ -184,6 +214,9 @@ void AHyperionPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AHyperionPlayer, ChangeableObject);
 	DOREPLIFETIME(AHyperionPlayer, bIsControlling);
 	DOREPLIFETIME(AHyperionPlayer, bIsFalling);
+	DOREPLIFETIME(AHyperionPlayer, XInput);
+	DOREPLIFETIME(AHyperionPlayer, YInput);
+	DOREPLIFETIME(AHyperionPlayer, HyperionPlayerLocation);
 }
 
 void AHyperionPlayer::SetIsCanControl_Implementation(bool val)
@@ -241,4 +274,14 @@ void AHyperionPlayer::InteractServer_Implementation()
 void AHyperionPlayer::SetIsFalling_Implementation(bool how)
 {
 	bIsFalling = how;
+}
+
+void AHyperionPlayer::SetXInput_Implementation(float X)
+{
+	XInput = X;
+}
+
+void AHyperionPlayer::SetYInput_Implementation(float Y)
+{
+	YInput = Y;
 }
