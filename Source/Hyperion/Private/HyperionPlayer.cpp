@@ -3,6 +3,7 @@
 
 #include "HyperionPlayer.h"
 
+#include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
 AHyperionPlayer::AHyperionPlayer()
@@ -10,9 +11,12 @@ AHyperionPlayer::AHyperionPlayer()
 	PrimaryActorTick.bCanEverTick = true;
 	UHyperionPlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	UHyperionPlayerCollision = CreateDefaultSubobject<UCapsuleComponent>("PlayerCollision");
+	UHyperionPlayerTrigger = CreateDefaultSubobject<UCapsuleComponent>("Trigger");
 
 	UHyperionPlayerCollision->InitCapsuleSize(55.f, 55.f);
+	UHyperionPlayerTrigger ->InitCapsuleSize(80.f, 80.f);
 	UHyperionPlayerCamera->SetupAttachment(UHyperionPlayerCollision);
+	UHyperionPlayerTrigger->SetupAttachment(UHyperionPlayerCollision);
 	UHyperionPlayerCamera->SetRelativeLocation(FVector(-39.56f, 1.75f, 100.f));
 	UHyperionPlayerCamera->bUsePawnControlRotation = true;
 	UHyperionPlayerCamera->FieldOfView = 110;
@@ -30,27 +34,32 @@ AHyperionPlayer::AHyperionPlayer()
 	UHyperionPlayerCollision->BodyInstance.AngularDamping = 1;
 	UHyperionPlayerCollision->BodyInstance.LinearDamping = 1;
 	UHyperionPlayerCollision->SetNotifyRigidBodyCollision(true);
+
+	/*if (!HasAuthority())
+	{
+		UHyperionPlayerCollision->SetCollisionProfileName("NoCollision");
+	}*/
+	
 }
 
-// Called when the game starts or when spawned
 void AHyperionPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	HyperionPlayerLocation = GetActorLocation();
+	//GetPlayerState()->GetPlayerController();
 }
 
-// Called every frame
 void AHyperionPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (bIsControlling)
 	{
 		SetControlledYInput(YInput);
-		SetControlledYInput(XInput);
+		SetControlledXInput(XInput);
 	}
 	else
 	{
-		PlayerForwardVector =  ForwardViewportVector * ForceMP * DeltaTime * YInput;
+		PlayerForwardVector = ForwardViewportVector * ForceMP * DeltaTime * YInput;
 		PlayerRightVector = RightViewportVector * ForceMP * DeltaTime * XInput;
 		if (!bIsFalling)
 		{
@@ -63,16 +72,11 @@ void AHyperionPlayer::Tick(float DeltaTime)
 		if (HasAuthority())
 		{
 			HyperionPlayerLocation = GetActorLocation();
-			//GEngine->AddOnScreenDebugMessage(-1,5, FColor::Cyan, HyperionPlayerLocation.ToString());
+			//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, HyperionPlayerLocation.ToString());
 		}
-	}
-	if (!HasAuthority())
-	{
-		SetActorLocation(FMath::VInterpTo(GetActorLocation(), HyperionPlayerLocation, DeltaTime, 10));
 	}
 }
 
-// Called to bind functionality to input
 void AHyperionPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -92,14 +96,16 @@ void AHyperionPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	UHyperionPlayerCollision->OnComponentBeginOverlap.AddDynamic(this, &AHyperionPlayer::OnOverlapBegin);
 	UHyperionPlayerCollision->OnComponentEndOverlap.AddDynamic(this, &AHyperionPlayer::OnOverlapEnd);
 
-	UHyperionPlayerCollision->OnComponentHit.AddDynamic(this, &AHyperionPlayer::OnHit);
+	UHyperionPlayerTrigger->OnComponentBeginOverlap.AddDynamic(this, &AHyperionPlayer::OnTriggered);
+	
 }
 
 
 void AHyperionPlayer::MoveForward(float Val)
 {
 	SetYInput(Val);
-	if(!HasAuthority())
+	YInput = Val;
+	if (!HasAuthority())
 	{
 		SetForwardViewportVector(FVector::VectorPlaneProject(
 			UHyperionPlayerCamera->GetForwardVector(), FVector(0, 0, 1)));
@@ -109,7 +115,8 @@ void AHyperionPlayer::MoveForward(float Val)
 void AHyperionPlayer::MoveRight(float Val)
 {
 	SetXInput(Val);
-	if(!HasAuthority())
+	XInput = Val;
+	if (!HasAuthority())
 	{
 		SetRightViewportVector(FVector::VectorPlaneProject(
 			UHyperionPlayerCamera->GetRightVector(), FVector(0, 0, 1)));
@@ -131,30 +138,19 @@ void AHyperionPlayer::JumpServer_Implementation()
 	UHyperionPlayerCollision->AddImpulse(FVector(0, 0, 200000));
 }
 
-
-void AHyperionPlayer::OnHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-                            FVector NormalImpulse, const FHitResult& Hit)
-{
-	SetIsFalling(false);
-	//bIsFalling = false;
-	//GEngine ->AddOnScreenDebugMessage(-1,5,FColor::Emerald, OtherActor->GetName());
-}
-
 void AHyperionPlayer::Run()
 {
 	SetForceMP(true);
-	//ForceMP *= 1.3f;
 }
 
 void AHyperionPlayer::StopRunning()
 {
 	SetForceMP(false);
-	//ForceMP /= 1.3f;
 }
 
 void AHyperionPlayer::SetForceMP_Implementation(bool isRunning)
 {
-	if(isRunning)
+	if (isRunning)
 	{
 		ForceMP *= 1.8f;
 	}
@@ -201,10 +197,12 @@ void AHyperionPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AHyperionPlayer, ChangeableObject);
 	DOREPLIFETIME(AHyperionPlayer, bIsControlling);
 	DOREPLIFETIME(AHyperionPlayer, bIsFalling);
-	DOREPLIFETIME(AHyperionPlayer, XInput);
-	DOREPLIFETIME(AHyperionPlayer, YInput);
+	/*DOREPLIFETIME(AHyperionPlayer, XInput);
+	DOREPLIFETIME(AHyperionPlayer, YInput);*/
 	DOREPLIFETIME(AHyperionPlayer, HyperionPlayerLocation);
 	DOREPLIFETIME(AHyperionPlayer, ForceMP);
+	DOREPLIFETIME(AHyperionPlayer, ForwardViewportVector);
+	DOREPLIFETIME(AHyperionPlayer, RightViewportVector);
 }
 
 void AHyperionPlayer::SetIsCanControl_Implementation(bool val)
@@ -283,3 +281,19 @@ void AHyperionPlayer::SetRightViewportVector_Implementation(FVector dir)
 {
 	RightViewportVector = dir;
 }
+
+void AHyperionPlayer::UpdateHyperionPlayerLocation()
+{
+	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, HyperionPlayerLocation.ToString());
+	SetActorLocation(FMath::VInterpTo(GetActorLocation(), HyperionPlayerLocation, GetWorld()->DeltaTimeSeconds, 30));
+}
+
+void AHyperionPlayer::OnTriggered(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Cyan, "Triggered!");
+	SetIsFalling(false);
+	bIsFalling = false;
+}
+
+
+

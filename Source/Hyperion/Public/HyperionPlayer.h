@@ -14,28 +14,30 @@ UCLASS()
 class HYPERION_API AHyperionPlayer : public APawn
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* UHyperionPlayerCollision;
+	UPROPERTY(VisibleAnywhere)
+	UCapsuleComponent* UHyperionPlayerTrigger;
 	UPROPERTY()
 	UCameraComponent* UHyperionPlayerCamera;
 	
 	UPROPERTY(Replicated, VisibleAnywhere, Category="PlayerMovement")
 	float ForceMP = 10000000.f * 1.3f;
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float XInput = 0.f;
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float YInput = 0.f;
 	UPROPERTY()
 	FVector PlayerRightVector;
 	UPROPERTY()
 	FVector PlayerForwardVector;
-	UPROPERTY()
-	FVector ForwardViewportVector;
-	UPROPERTY()
-	FVector RightViewportVector;
-
+	
 	UPROPERTY(Replicated)
+	FVector ForwardViewportVector;
+	UPROPERTY(Replicated)
+	FVector RightViewportVector;
+	UPROPERTY(ReplicatedUsing= UpdateHyperionPlayerLocation)
 	FVector HyperionPlayerLocation;
 	UPROPERTY(Replicated)
 	bool bIsFalling = false;
@@ -73,6 +75,8 @@ class HYPERION_API AHyperionPlayer : public APawn
 	void SetRightViewportVector(FVector dir);
 	UFUNCTION(Server, Unreliable)
 	void SetForwardViewportVector(FVector dir);
+	UFUNCTION()
+	void UpdateHyperionPlayerLocation();
 		
 
 	void Run();
@@ -94,10 +98,6 @@ protected:
 	void MoveRight(float Val);
 	void Jump();
 	void Interact();
-	UFUNCTION()
-	void OnHit(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-						class UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-						const FHitResult& Hit);
 
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
@@ -108,10 +108,11 @@ protected:
 	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
 					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	/*UFUNCTION()
-	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-					  class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);*/
-
+	UFUNCTION()
+	void OnTriggered(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
+						class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+						const FHitResult& SweepResult);
+	
 };
 
 
