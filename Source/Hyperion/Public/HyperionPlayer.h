@@ -32,12 +32,14 @@ class HYPERION_API AHyperionPlayer : public APawn
 	FVector PlayerRightVector;
 	UPROPERTY()
 	FVector PlayerForwardVector;
+	UPROPERTY()
+	bool bIsControlled = false;
 	
 	UPROPERTY(Replicated)
 	FVector ForwardViewportVector;
 	UPROPERTY(Replicated)
 	FVector RightViewportVector;
-	UPROPERTY(ReplicatedUsing= UpdateHyperionPlayerLocation)
+	UPROPERTY(Replicated)
 	FVector HyperionPlayerLocation;
 	UPROPERTY(Replicated)
 	bool bIsFalling = false;
@@ -50,10 +52,6 @@ class HYPERION_API AHyperionPlayer : public APawn
 	
 	UFUNCTION(Server, Reliable)
 	void InteractServer();
-	UFUNCTION(Server, Reliable)
-	void JumpServer();
-	UFUNCTION(Server, Reliable)
-	void SetForceMP(bool isRunning);
 	UFUNCTION(Server, Reliable)
 	void SetIsCanControl(bool val);
 	UFUNCTION(Server, Unreliable)
@@ -72,12 +70,7 @@ class HYPERION_API AHyperionPlayer : public APawn
 	UFUNCTION(Server, Unreliable)
 	void SetYInput(float Y);
 	UFUNCTION(Server, Unreliable)
-	void SetRightViewportVector(FVector dir);
-	UFUNCTION(Server, Unreliable)
-	void SetForwardViewportVector(FVector dir);
-	UFUNCTION()
-	void UpdateHyperionPlayerLocation();
-		
+	void SetHyperionPlayerLocation(FVector dir);
 
 	void Run();
 	void StopRunning();
