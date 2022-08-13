@@ -15,10 +15,6 @@ class HYPERION_API ACannon : public AChangeableObject
 	GENERATED_BODY()
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* UCannonMesh;
-	UPROPERTY()
-	float XRotation;
-	UPROPERTY()
-	float YRotation;
 
 public:
 	ACannon();
