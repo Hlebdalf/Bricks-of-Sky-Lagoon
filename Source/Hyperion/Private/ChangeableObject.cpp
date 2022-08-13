@@ -20,10 +20,14 @@ void AChangeableObject::UpdateValue()
 {
 	FVector2D inputVector = InputDirection * GetWorld()->DeltaTimeSeconds * DirectionMP;
 	if (DirectionThresholdFloor.X < Value.X + inputVector.X &&
-		Value.X + inputVector.X < DirectionThresholdRoof.X &&
-		DirectionThresholdFloor.Y < Value.Y + inputVector.Y
+		Value.X + inputVector.X < DirectionThresholdRoof.X
+	)
+	{
+		Value.X += inputVector.X;
+	}
+	if (DirectionThresholdFloor.Y < Value.Y + inputVector.Y
 		&& Value.Y + inputVector.Y < DirectionThresholdRoof.Y)
 	{
-		Value += inputVector;
-	} 
+		Value.Y += inputVector.Y;
+	}
 }
