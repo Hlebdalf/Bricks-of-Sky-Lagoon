@@ -219,10 +219,10 @@ void AHyperionPlayer::InteractServer_Implementation()
 	}
 	else if (ChangeableObject != nullptr && bIsControlling)
 	{
-		SetIsControlling(false);
-		ChangeableObject->SetIsControlling(false);
 		SetControlledXInput_Implementation(0);
 		SetControlledYInput_Implementation(0);
+		SetIsControlling(false);
+		ChangeableObject->SetIsControlling(false);
 	}
 }
 

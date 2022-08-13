@@ -25,6 +25,7 @@ void AInteractiveObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AInteractiveObject, HyperionCharacter);
+	DOREPLIFETIME(AInteractiveObject, InputDirection);
 }
 
 

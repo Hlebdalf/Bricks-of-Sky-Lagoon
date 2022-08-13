@@ -12,8 +12,6 @@ class HYPERION_API AInteractiveObject : public APawn
 {
 	GENERATED_BODY()
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* UInteractiveMesh;
-	UPROPERTY(EditAnywhere)
 	UBoxComponent* InteractiveObjectTrigger;
 	UPROPERTY(Replicated)
 	ACharacter* HyperionCharacter;
@@ -44,6 +42,8 @@ public:
 	void SetIsControlling(bool how);
 
 protected:
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* UInteractiveMesh;
 	UPROPERTY(Replicated)
 	FVector2D InputDirection = FVector2D(0, 0);
 };

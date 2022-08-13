@@ -25,5 +25,5 @@ void AChangeableObject::UpdateValue()
 		&& Value.Y + inputVector.Y < DirectionThresholdRoof.Y)
 	{
 		Value += inputVector;
-	}
+	} 
 }
