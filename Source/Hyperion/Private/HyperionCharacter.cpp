@@ -124,7 +124,7 @@ void AHyperionCharacter::InteractServer_Implementation()
 		if (!ChangeableObject->GetIsControlling())
 		{
 			ChangeableObject->SetIsControlling(true);
-			ChangeableObject->SetHyperionCharacter(this);
+			ChangeableObject->SetHyperionPlayer(this);
 			SetIsControlling(true);
 			bIsControlling = true;
 		}

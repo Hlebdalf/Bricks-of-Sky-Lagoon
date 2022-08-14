@@ -19,4 +19,9 @@ class HYPERION_API ACannon : public AChangeableObject
 public:
 	ACannon();
 	virtual void Tick(float DeltaSeconds) override;
+	UFUNCTION(Server, Reliable)
+	void CannonShoot();
+protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void Fire();
 };

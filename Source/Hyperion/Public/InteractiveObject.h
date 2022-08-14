@@ -14,7 +14,7 @@ class HYPERION_API AInteractiveObject : public APawn
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* InteractiveObjectTrigger;
 	UPROPERTY(Replicated)
-	ACharacter* HyperionCharacter;
+	APawn* HyperionPlayer;
 
 	UPROPERTY(Replicated)
 	bool bIsControlling = false;
@@ -35,7 +35,7 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void SetInputForwardValue(float Value);
 	UFUNCTION(Server, Reliable)
-	void SetHyperionCharacter(ACharacter* object);
+	void SetHyperionPlayer(APawn* object);
 	UFUNCTION()
 	bool GetIsControlling();
 	UFUNCTION(Server, Reliable)

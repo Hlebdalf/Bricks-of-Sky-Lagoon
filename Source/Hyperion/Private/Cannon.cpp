@@ -18,3 +18,12 @@ void ACannon::Tick(float DeltaSeconds)
 	SetActorRelativeRotation(FRotator(0, Value.X * ValueMP.X, 0));
 	UCannonMesh->SetRelativeRotation(FRotator(0, 270, -Value.Y * ValueMP.Y));
 }
+
+/*void ACannon::kuko_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1,5,FColor::Emerald,"Jumped!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+}*/
+
+void ACannon::CannonShoot_Implementation() {
+	Fire();
+}
