@@ -103,8 +103,8 @@ void ASkyShip::EnablePhysicsOnServer_Implementation()
 
 void ASkyShip::InterToTransform()
 {	
-	FQuat lol = FMath::QInterpTo(GetActorRotation().Quaternion(), NowTransform.GetRotation(), GetWorld()->DeltaTimeSeconds,1);
-	FVector kek = FMath::VInterpTo(GetActorLocation(), NowTransform.GetLocation(), GetWorld()->DeltaTimeSeconds, 1);
+	FQuat lol = FMath::QInterpTo(GetActorRotation().Quaternion(), NowTransform.GetRotation(), GetWorld()->DeltaTimeSeconds,5);
+	FVector kek = FMath::VInterpTo(GetActorLocation(), NowTransform.GetLocation(), GetWorld()->DeltaTimeSeconds, 5);
 	FTransform cheburek = FTransform(lol, kek, FVector(1,1,1));
 	SetActorTransform(cheburek);
 }
