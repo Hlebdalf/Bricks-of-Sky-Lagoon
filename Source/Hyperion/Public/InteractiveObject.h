@@ -12,11 +12,9 @@ class HYPERION_API AInteractiveObject : public APawn
 {
 	GENERATED_BODY()
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* UInteractiveMesh;
-	UPROPERTY(EditAnywhere)
 	UBoxComponent* InteractiveObjectTrigger;
 	UPROPERTY(Replicated)
-	ACharacter* HyperionCharacter;
+	APawn* HyperionPlayer;
 
 	UPROPERTY(Replicated)
 	bool bIsControlling = false;
@@ -37,13 +35,15 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void SetInputForwardValue(float Value);
 	UFUNCTION(Server, Reliable)
-	void SetHyperionCharacter(ACharacter* object);
+	void SetHyperionPlayer(APawn* object);
 	UFUNCTION()
 	bool GetIsControlling();
 	UFUNCTION(Server, Reliable)
 	void SetIsControlling(bool how);
 
 protected:
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* UInteractiveMesh;
 	UPROPERTY(Replicated)
 	FVector2D InputDirection = FVector2D(0, 0);
 };

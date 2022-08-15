@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "ChangeableObject.h"
+#include "Cannon.h"
 #include "Camera/CameraComponent.h"
-#include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Pawn.h"
 #include "HyperionPlayer.generated.h"
+
 
 UCLASS()
 class HYPERION_API AHyperionPlayer : public APawn
@@ -64,6 +65,8 @@ class HYPERION_API AHyperionPlayer : public APawn
 	void SetIsControlling(bool val);
 	UFUNCTION(Server, Reliable)
 	void SetChangeableObject(AChangeableObject* object);
+	UFUNCTION(Server, Reliable)
+	void SpacePressed();
 	
 	UFUNCTION(Server, Unreliable)
 	void SetXInput(float X);

@@ -2,7 +2,6 @@
 
 
 #include "HyperionPlayer.h"
-
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
@@ -41,6 +40,7 @@ void AHyperionPlayer::BeginPlay()
 	Super::BeginPlay();
 	HyperionPlayerLocation = GetActorLocation();
 	bIsControlled = this->IsPawnControlled();
+	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Black, "Started");
 }
 
 void AHyperionPlayer::Tick(float DeltaTime)
@@ -119,10 +119,25 @@ void AHyperionPlayer::MoveRight(float Val)
 
 void AHyperionPlayer::Jump()
 {
-	if (!bIsFalling)
+	if (bIsControlling)
+	{	
+		//NEED TO REWORK!
+		SpacePressed();
+		//NEED TO REWORK!
+	}
+	else
 	{
-		bIsFalling = true;
-		UHyperionPlayerCollision->AddImpulse(FVector(0, 0, 200000));
+		if (!bIsFalling)
+		{
+			bIsFalling = true;
+			UHyperionPlayerCollision->AddImpulse(FVector(0, 0, 200000));
+		}
+	}
+}
+void AHyperionPlayer::SpacePressed_Implementation() {
+	ACannon* cannon = Cast<ACannon>(ChangeableObject);
+	if (cannon != nullptr) {
+		cannon->CannonShoot();
 	}
 }
 
@@ -213,16 +228,18 @@ void AHyperionPlayer::InteractServer_Implementation()
 		if (!ChangeableObject->GetIsControlling())
 		{
 			ChangeableObject->SetIsControlling(true);
+			ChangeableObject->SetHyperionPlayer(this);
 			SetIsControlling(true);
 			bIsControlling = true;
 		}
 	}
 	else if (ChangeableObject != nullptr && bIsControlling)
 	{
+		SetControlledXInput(0);
+		SetControlledYInput(0);
 		SetIsControlling(false);
 		ChangeableObject->SetIsControlling(false);
-		SetControlledXInput_Implementation(0);
-		SetControlledYInput_Implementation(0);
+		ChangeableObject->SetHyperionPlayer(nullptr);
 	}
 }
 

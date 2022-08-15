@@ -24,13 +24,14 @@ void AInteractiveObject::BeginPlay()
 void AInteractiveObject::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AInteractiveObject, HyperionCharacter);
+	DOREPLIFETIME(AInteractiveObject, HyperionPlayer);
+	DOREPLIFETIME(AInteractiveObject, InputDirection);
 }
 
 
-void AInteractiveObject::SetHyperionCharacter_Implementation(ACharacter* object)
+void AInteractiveObject::SetHyperionPlayer_Implementation(APawn* object)
 {
-	HyperionCharacter = object;
+	HyperionPlayer = object;
 }
 
 bool AInteractiveObject::GetIsControlling()
@@ -59,4 +60,3 @@ void AInteractiveObject::SetInputDirection_Implementation(float LeftRightValue, 
 {
 	InputDirection = FVector2D(LeftRightValue, ForwardBackValue);
 }
-
