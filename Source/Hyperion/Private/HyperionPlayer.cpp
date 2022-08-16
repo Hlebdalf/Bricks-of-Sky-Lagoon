@@ -6,7 +6,7 @@
 #include "Net/UnrealNetwork.h"
 
 AHyperionPlayer::AHyperionPlayer()
-{
+{	
 	PrimaryActorTick.bCanEverTick = true;
 	UHyperionPlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	UHyperionPlayerCollision = CreateDefaultSubobject<UCapsuleComponent>("PlayerCollision");
@@ -46,6 +46,7 @@ void AHyperionPlayer::BeginPlay()
 void AHyperionPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//DeltaTime = 1 / 30;
 	if (!HasAuthority())
 	{
 		if (bIsControlling)
@@ -55,8 +56,10 @@ void AHyperionPlayer::Tick(float DeltaTime)
 		}
 		else
 		{
-			PlayerForwardVector = ForwardViewportVector * ForceMP * DeltaTime * YInput;
-			PlayerRightVector = RightViewportVector * ForceMP * DeltaTime * XInput;
+			/*PlayerForwardVector = ForwardViewportVector * ForceMP * DeltaTime * YInput;
+			PlayerRightVector = RightViewportVector * ForceMP * DeltaTime * XInput;*/
+			PlayerForwardVector = ForwardViewportVector * ForceMP * YInput;
+			PlayerRightVector = RightViewportVector * ForceMP  * XInput;
 			if (!bIsFalling)
 			{
 				UHyperionPlayerCollision->AddForce(PlayerForwardVector + PlayerRightVector);

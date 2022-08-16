@@ -24,7 +24,7 @@ class HYPERION_API AHyperionPlayer : public APawn
 	UCameraComponent* UHyperionPlayerCamera;
 	
 	UPROPERTY(Replicated, VisibleAnywhere, Category="PlayerMovement")
-	float ForceMP = 10000000.f * 1.3f;
+	float ForceMP = 100000.f * 3.3f;
 	UPROPERTY()
 	float XInput = 0.f;
 	UPROPERTY()
