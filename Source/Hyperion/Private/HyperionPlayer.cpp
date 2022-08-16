@@ -129,7 +129,7 @@ void AHyperionPlayer::Jump()
 		if (!bIsFalling)
 		{
 			bIsFalling = true;
-			UHyperionPlayerCollision->AddImpulse(FVector(0, 0, 200000));
+			UHyperionPlayerCollision->AddImpulse(FVector(0, 0, 80000));
 		}
 	}
 }
