@@ -40,13 +40,11 @@ void AHyperionPlayer::BeginPlay()
 	Super::BeginPlay();
 	HyperionPlayerLocation = GetActorLocation();
 	bIsControlled = this->IsPawnControlled();
-	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Black, "Started");
 }
 
 void AHyperionPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//DeltaTime = 1 / 30;
 	if (!HasAuthority())
 	{
 		if (bIsControlling)
@@ -56,8 +54,6 @@ void AHyperionPlayer::Tick(float DeltaTime)
 		}
 		else
 		{
-			/*PlayerForwardVector = ForwardViewportVector * ForceMP * DeltaTime * YInput;
-			PlayerRightVector = RightViewportVector * ForceMP * DeltaTime * XInput;*/
 			PlayerForwardVector = ForwardViewportVector * ForceMP * YInput;
 			PlayerRightVector = RightViewportVector * ForceMP  * XInput;
 			if (!bIsFalling)
@@ -237,12 +233,14 @@ void AHyperionPlayer::InteractServer_Implementation()
 		}
 	}
 	else if (ChangeableObject != nullptr && bIsControlling)
-	{
-		SetControlledXInput(0);
-		SetControlledYInput(0);
+	{	
 		SetIsControlling(false);
 		ChangeableObject->SetIsControlling(false);
 		ChangeableObject->SetHyperionPlayer(nullptr);
+		ChangeableObject->SetInputForwardValue(0);
+		ChangeableObject->SetInputRightValue(0);
+		SetControlledXInput(0);
+		SetControlledYInput(0);
 	}
 }
 
