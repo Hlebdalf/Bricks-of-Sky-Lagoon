@@ -13,8 +13,10 @@ UCLASS()
 class HYPERION_API AShipWheel : public AShipboardChangeableObject
 {
 	GENERATED_BODY()
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* UShipWheelMesh;
 	
 public:
+	AShipWheel();
 	virtual void Tick(float DeltaSeconds) override;
-
 };

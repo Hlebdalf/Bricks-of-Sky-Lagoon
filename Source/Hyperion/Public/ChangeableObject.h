@@ -30,7 +30,7 @@ protected:
 	FVector2D DirectionMP = FVector2D(0, 0);
 	UPROPERTY(EditAnywhere,Category="ChangeableSettings")
 	FVector2D ValueMP = FVector2D(0, 0);
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	FVector2D Value = FVector2D(0, 0);
 public:
 	virtual void Tick(float DeltaTime) override;
