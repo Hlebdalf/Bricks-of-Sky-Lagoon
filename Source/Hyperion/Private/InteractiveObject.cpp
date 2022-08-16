@@ -57,6 +57,12 @@ void AInteractiveObject::SetInputRightValue_Implementation(float Value)
 }
 
 void AInteractiveObject::SetInputDirection_Implementation(float LeftRightValue, float ForwardBackValue)
-{
-	InputDirection = FVector2D(LeftRightValue, ForwardBackValue);
+{	
+	if (bIsControlling) {
+		InputDirection = FVector2D(LeftRightValue, ForwardBackValue);
+	}
+	else {
+		InputDirection = FVector2D(0, 0);
+	}
+	
 }

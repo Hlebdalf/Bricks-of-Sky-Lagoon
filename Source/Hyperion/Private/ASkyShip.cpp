@@ -54,21 +54,19 @@ void ASkyShip::UpdatePhysics()
 {
 	if (HasAuthority())
 	{
-		float delta = GetWorld()->DeltaTimeSeconds;
-
 		SkyShipCorpus->AddForceAtLocationLocal(
-			FVector(0, 0, UpForceMP * (TargetSkyLevel - ForwardArrow->GetComponentLocation().Z) * delta),
+			FVector(0, 0, UpForceMP * (TargetSkyLevel - ForwardArrow->GetComponentLocation().Z)),
 			ForwardArrow->GetRelativeLocation());
 		SkyShipCorpus->AddForceAtLocationLocal(
-			FVector(0, 0, UpForceMP * (TargetSkyLevel - BackArrow->GetComponentLocation().Z) * delta),
+			FVector(0, 0, UpForceMP * (TargetSkyLevel - BackArrow->GetComponentLocation().Z)),
 			BackArrow->GetRelativeLocation());
 		SkyShipCorpus->AddForceAtLocationLocal(
-			FVector(0, 0, UpForceMP * (TargetSkyLevel - LeftArrow->GetComponentLocation().Z) * delta),
+			FVector(0, 0, UpForceMP * (TargetSkyLevel - LeftArrow->GetComponentLocation().Z)),
 			LeftArrow->GetRelativeLocation());
 		SkyShipCorpus->AddForceAtLocationLocal(
-			FVector(0, 0, UpForceMP * (TargetSkyLevel - RightArrow->GetComponentLocation().Z) * delta),
+			FVector(0, 0, UpForceMP * (TargetSkyLevel - RightArrow->GetComponentLocation().Z)),
 			RightArrow->GetRelativeLocation());
-		SkyShipCorpus->AddTorqueInRadians(FVector(0, 0, SkyShipTorque * delta));
+		SkyShipCorpus->AddTorqueInRadians(FVector(0, 0, SkyShipTorque));
 		SkyShipCorpus->AddForce(GetActorForwardVector() * SkyShipSpeedMP);
 		NowTransform = GetActorTransform();
 	}

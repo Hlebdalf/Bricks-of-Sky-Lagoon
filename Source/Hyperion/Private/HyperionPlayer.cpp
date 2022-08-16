@@ -6,7 +6,7 @@
 #include "Net/UnrealNetwork.h"
 
 AHyperionPlayer::AHyperionPlayer()
-{
+{	
 	PrimaryActorTick.bCanEverTick = true;
 	UHyperionPlayerCamera = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	UHyperionPlayerCollision = CreateDefaultSubobject<UCapsuleComponent>("PlayerCollision");
@@ -40,7 +40,6 @@ void AHyperionPlayer::BeginPlay()
 	Super::BeginPlay();
 	HyperionPlayerLocation = GetActorLocation();
 	bIsControlled = this->IsPawnControlled();
-	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Black, "Started");
 }
 
 void AHyperionPlayer::Tick(float DeltaTime)
@@ -55,8 +54,8 @@ void AHyperionPlayer::Tick(float DeltaTime)
 		}
 		else
 		{
-			PlayerForwardVector = ForwardViewportVector * ForceMP * DeltaTime * YInput;
-			PlayerRightVector = RightViewportVector * ForceMP * DeltaTime * XInput;
+			PlayerForwardVector = ForwardViewportVector * ForceMP * YInput;
+			PlayerRightVector = RightViewportVector * ForceMP  * XInput;
 			if (!bIsFalling)
 			{
 				UHyperionPlayerCollision->AddForce(PlayerForwardVector + PlayerRightVector);
@@ -130,7 +129,7 @@ void AHyperionPlayer::Jump()
 		if (!bIsFalling)
 		{
 			bIsFalling = true;
-			UHyperionPlayerCollision->AddImpulse(FVector(0, 0, 200000));
+			UHyperionPlayerCollision->AddImpulse(FVector(0, 0, 80000));
 		}
 	}
 }
@@ -234,12 +233,14 @@ void AHyperionPlayer::InteractServer_Implementation()
 		}
 	}
 	else if (ChangeableObject != nullptr && bIsControlling)
-	{
-		SetControlledXInput(0);
-		SetControlledYInput(0);
+	{	
 		SetIsControlling(false);
 		ChangeableObject->SetIsControlling(false);
 		ChangeableObject->SetHyperionPlayer(nullptr);
+		ChangeableObject->SetInputForwardValue(0);
+		ChangeableObject->SetInputRightValue(0);
+		SetControlledXInput(0);
+		SetControlledYInput(0);
 	}
 }
 
