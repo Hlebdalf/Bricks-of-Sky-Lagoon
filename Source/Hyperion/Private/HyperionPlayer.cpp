@@ -47,6 +47,12 @@ void AHyperionPlayer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (!HasAuthority())
 	{
+		if (bIsOwningSkyShip) {
+			PreOwnedShipLocation = NowOwnedShipLocation;
+			NowOwnedShipLocation = OwnedSkyShip->GetActorLocation();
+			SetActorLocation(GetActorLocation() + NowOwnedShipLocation - PreOwnedShipLocation);
+			//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, (NowOwnedShipLocation - PreOwnedShipLocation).ToString());
+		}
 		if (bIsControlling)
 		{
 			SetControlledYInput(YInput);
@@ -158,10 +164,18 @@ void AHyperionPlayer::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, "YouCanControl on F ");
 		ChangeableObject = Cast<AChangeableObject>(OtherActor);
+		
 		if (ChangeableObject != nullptr)
 		{
 			SetChangeableObject(ChangeableObject);
 			SetIsCanControl(true);
+		}
+
+		ASkyShip* sh = Cast<ASkyShip>(OtherActor);
+		if (sh != nullptr) {
+			bIsOwningSkyShip = true;
+			OwnedSkyShip = sh;
+			NowOwnedShipLocation = OwnedSkyShip->GetActorLocation();
 		}
 	}
 }
@@ -176,6 +190,11 @@ void AHyperionPlayer::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* 
 		{
 			SetIsCanControl(false);
 		}
+	}
+	ASkyShip* sh = Cast<ASkyShip>(OtherActor);
+	if (sh != nullptr) {
+		//OwnedSkyShip = nullptr;
+		bIsOwningSkyShip = false;
 	}
 }
 

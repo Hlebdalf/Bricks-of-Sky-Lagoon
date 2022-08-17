@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "ChangeableObject.h"
 #include "Cannon.h"
+#include "ASkyShip.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Pawn.h"
@@ -35,6 +36,15 @@ class HYPERION_API AHyperionPlayer : public APawn
 	FVector PlayerForwardVector;
 	UPROPERTY()
 	bool bIsControlled = false;
+	UPROPERTY()
+	bool bIsOwningSkyShip = false;
+
+	UPROPERTY()
+	FVector NowOwnedShipLocation = FVector(0, 0, 0);
+	UPROPERTY()
+	FVector PreOwnedShipLocation = FVector(0, 0, 0);
+	
+	
 	
 	UPROPERTY(Replicated)
 	FVector ForwardViewportVector;
@@ -50,6 +60,8 @@ class HYPERION_API AHyperionPlayer : public APawn
 	bool bIsControlling = false;
 	UPROPERTY(Replicated)
 	AChangeableObject* ChangeableObject;
+	UPROPERTY()
+	ASkyShip* OwnedSkyShip;
 	
 	UFUNCTION(Server, Reliable)
 	void InteractServer();
