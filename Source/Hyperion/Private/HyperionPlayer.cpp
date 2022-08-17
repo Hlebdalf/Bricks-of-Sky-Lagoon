@@ -51,6 +51,7 @@ void AHyperionPlayer::Tick(float DeltaTime)
 			PreOwnedShipLocation = NowOwnedShipLocation;
 			NowOwnedShipLocation = OwnedSkyShip->GetActorLocation();
 			SetActorLocation(GetActorLocation() + NowOwnedShipLocation - PreOwnedShipLocation);
+			SyncRotation();
 			//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, (NowOwnedShipLocation - PreOwnedShipLocation).ToString());
 		}
 		if (bIsControlling)
@@ -176,6 +177,8 @@ void AHyperionPlayer::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, 
 			bIsOwningSkyShip = true;
 			OwnedSkyShip = sh;
 			NowOwnedShipLocation = OwnedSkyShip->GetActorLocation();
+			NowOwnedShipRotation = OwnedSkyShip->GetActorRotation().Roll;
+			PreOwnedShipRotation = NowOwnedShipRotation;
 		}
 	}
 }
@@ -288,4 +291,17 @@ void AHyperionPlayer::OnTriggered(UPrimitiveComponent* OverlappedComp, AActor* O
 void AHyperionPlayer::SetHyperionPlayerLocation_Implementation(FVector dir)
 {
 	HyperionPlayerLocation = dir;
+}
+
+void AHyperionPlayer::SyncRotation() {
+
+	FVector2D NowLocation = FVector2D((GetActorLocation() - OwnedSkyShip->GetActorLocation()).X, (GetActorLocation() - OwnedSkyShip->GetActorLocation()).Y);
+	double phi = FMath::DegreesToRadians(OwnedSkyShip->GetActorRotation().Roll);
+
+	FVector2D NewLocation;
+	NewLocation.X = NowLocation.X * FMath::Cos(phi) - NowLocation.Y * FMath::Sin(phi);
+	NewLocation.Y = NowLocation.X * FMath::Sin(phi) + NowLocation.Y * FMath::Cos(phi);
+
+	FVector2D DeltaLocation = (NewLocation - NowLocation) / 13;
+	SetActorLocation(FVector(GetActorLocation().X + DeltaLocation.X, GetActorLocation().Y + DeltaLocation.Y, GetActorLocation().Z));	
 }

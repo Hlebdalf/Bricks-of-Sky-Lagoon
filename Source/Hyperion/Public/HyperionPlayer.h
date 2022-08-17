@@ -43,6 +43,11 @@ class HYPERION_API AHyperionPlayer : public APawn
 	FVector NowOwnedShipLocation = FVector(0, 0, 0);
 	UPROPERTY()
 	FVector PreOwnedShipLocation = FVector(0, 0, 0);
+
+	UPROPERTY()
+	double NowOwnedShipRotation = 0;
+	UPROPERTY()
+	double PreOwnedShipRotation = 0;
 	
 	
 	
@@ -79,6 +84,8 @@ class HYPERION_API AHyperionPlayer : public APawn
 	void SetChangeableObject(AChangeableObject* object);
 	UFUNCTION(Server, Reliable)
 	void SpacePressed();
+	UFUNCTION()
+	void SyncRotation();
 	
 	UFUNCTION(Server, Unreliable)
 	void SetXInput(float X);
