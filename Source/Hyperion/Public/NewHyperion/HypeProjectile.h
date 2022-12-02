@@ -4,23 +4,32 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/CapsuleComponent.h"
+#include "HypeSkyShip.h"
+#include "HypeBrickImporter.h"
 #include "HypeProjectile.generated.h"
 
 UCLASS()
 class HYPERION_API AHypeProjectile : public AActor
 {
 	GENERATED_BODY()
+	UPROPERTY(VisibleAnywhere)
+	UCapsuleComponent* ProjectileCollision;
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* ProjectileMesh;
 	
 public:	
-	// Sets default values for this actor's properties
 	AHypeProjectile();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void SetupCollision();
+	void SetupMesh();
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	UFUNCTION(BlueprintCallable)
+	void AddProjectileImpulse(FVector imuplse);
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };
