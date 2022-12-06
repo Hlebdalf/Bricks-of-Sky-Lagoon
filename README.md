@@ -1,5 +1,5 @@
 # Hyperion
-Multyplayer online shooter on Unreal 5 with skyships and rome
+Multiplayer online shooter on Unreal 5 with skyships and rome
 
 ![til](./img/Gameplay.gif)
 # 💡This game about...
