@@ -59,6 +59,5 @@ void AHypeProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		SkyShip->DamageShip(GetActorLocation(), CollectedComponents);
 		int len = CollectedComponents.Num();
 		if (len > 10) Destroy();
-		//Destroy();
 	}
 }
